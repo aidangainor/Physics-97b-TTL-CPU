@@ -8,8 +8,8 @@ class MicroInstruction:
 
     # EEPROM 1 flags here
     enable_carry_in = "0"
-    ALU_f0 = "0"
-    ALU_f1 = "0"
+    ALU_f0 = "1"
+    ALU_f1 = "1"
     status_reg_load_select = "0" # 0 = load flags from ALU, 1 = load flags from DB
     device_onto_db = "1111" # 4 bit code for what devide (register, RAM, ...) is outputting onto DB? DB output is mutually exclusive
                             # PC low buffer CAN'T drive databus
