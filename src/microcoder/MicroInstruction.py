@@ -69,4 +69,6 @@ class MicroInstruction:
             return self.full_ROM_layout[EEPROM_num-1]
 
     def set_next_u_inst_addr(self, addr):
+        """Set the 4 bit address to load into feedback register next clock cycle.
+        """
         self.next_micro_inst = addr

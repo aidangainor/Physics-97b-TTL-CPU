@@ -71,9 +71,16 @@ class Instruction:
         Optional i paramater for specifying specific location of where to append PC fetch
         """
 
-    def get_interrupt_sequence(self):
-        # Interrupt only occurs on next instruction cycle, this can be accomplished by checking if feedback register contains 4 0's
+    def generate_interrupt_sequence(self):
+        """Return a constant interrupt handling routine (in microcode, of course!).
+        Interrupt only occurs on next instruction cycle, this can be accomplished by checking if feedback register contains 4 0's
+        """
         pass
+
+    def get_u_instructions(self):
+        """Return all micro instructions that constitute an instruction
+        """
+        return self.inst_micro_instructions
 
     def get_reset_sequence(self):
         """Returns a sequnce of u-insts that reset the CPU
