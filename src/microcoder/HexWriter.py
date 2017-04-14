@@ -1,0 +1,2 @@
+class HexWriter:
+    pass

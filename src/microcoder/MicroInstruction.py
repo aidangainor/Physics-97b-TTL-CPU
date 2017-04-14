@@ -8,8 +8,7 @@ class MicroInstruction:
 
     # EEPROM 1 flags here
     enable_carry_in = "0"
-    ALU_f0 = "1"
-    ALU_f1 = "1"
+    ALU_f0_f1 = "11"
     status_reg_load_select = "0" # 0 = load flags from ALU, 1 = load flags from DB
     device_onto_db = "1111" # 4 bit code for what devide (register, RAM, ...) is outputting onto DB? DB output is mutually exclusive
                             # PC low buffer CAN'T drive databus
@@ -17,13 +16,15 @@ class MicroInstruction:
     # EEPROM 2 flags here
     inc_PC = "0"
     inc_MAR = "0"
-    device_onto_ab = "0" # What 16 bit register is active on address bus? 0 = PC, 1 = MAR
+    device_onto_ab = "00" # What 16 bit register is active on address bus? 0 = PC, 1 = MAR
     device_write_enable = "1111" # 4 bit code for what device is enabled to clock in data bus value next clock cycle
                                  # PC low + high are always clocked in at once
                                  # Status register is special case write, as it can be written in tandem with other registers
 
     # EEPROM 3 flags here
     condition_code = "111" # Fed to 3 -> 8 decoder on what condition to check
+    write_status_reg = "0"
+    inv_A = "0" # Inverse values of A input
 
     # EEPROM 4 flags here
     clear_PC = "1"
@@ -42,13 +43,15 @@ class MicroInstruction:
         # Flag layout for each EEPROM
         # This directly maps to hardware, for example ALU_f0 will emanate from the 1st EEPROM's 2nd I/O pin
         # Clear_PC will emanate from the 3rd EEPROM's 1st I/O pin
-        self.EEPROM1_layout = [self.enable_carry_in, self.ALU_f0, self.ALU_f1, self.status_reg_load_select, self.device_onto_db]
-        self.EEPROM2_layout = [self.inc_PC, self.inc_MAR, self.device_onto_ab, NOT_USED, self.device_write_enable]
-        self.EEPROM3_layout = [self.condition_code, NOT_USED, NOT_USED, NOT_USED, NOT_USED, NOT_USED]
+        self.EEPROM1_layout = [self.enable_carry_in, self.ALU_f0_f1, self.status_reg_load_select, self.device_onto_db]
+        self.EEPROM2_layout = [self.inc_PC, self.inc_MAR, self.device_onto_ab, self.device_write_enable]
+        self.EEPROM3_layout = [self.condition_code, self.write_status_reg, self.inv_A, NOT_USED, NOT_USED, NOT_USED]
         self.EEPROM4_layout = [self.clear_PC, self.clear_MAR, self.halt, self.reset, self.next_micro_inst]
         self.full_ROM_layout = [self.EEPROM1_layout, self.EEPROM2_layout, self.EEPROM3_layout, self.EEPROM4_layout]
 
     def generate_EEPROM_bitstring(self, flag_layout):
+        """Create a byte string from a given "flag layout", like from EEPROM1 layout for example
+        """
         bitstring = ""
         for flag in flag_layout:
             bitstring += flag
@@ -65,6 +68,5 @@ class MicroInstruction:
         else:
             return self.full_ROM_layout[EEPROM_num-1]
 
-inst = MicroInstruction()
-for EEPROM_layout in inst.full_ROM_layout:
-    print(inst.generate_EEPROM_bitstring(EEPROM_layout))
+    def set_next_u_inst_addr(self, addr):
+        self.next_micro_inst = addr
