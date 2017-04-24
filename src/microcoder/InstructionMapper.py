@@ -1,6 +1,6 @@
 from Instruction import Instruction
 from MicroInstruction import MicroInstruction
-from Decoders import *
+from Enoders import *
 
 # T register acts as a temporary register for all memory transfers
 asm_insts = ["RESET", "HALT", "LOAD_IMD", "LOAD_IND", "STORE_IND", "ADD", "ADD_WC", "SUB", "AND", "OR", "XOR",
@@ -29,7 +29,7 @@ for inst in asm_insts:
         inst_obj.add_u_instruction(MicroInstruction(halt="1"))
     # Load immediate byte
     elif inst == "LOAD_IMD":
-        load_byte_u_insts = [MicroInstruction(inc_PC="1"),
+        load_byte_u_insts = [MicroInstruction(inc_PC="1", device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"]),
                              MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
                                               device_write_enable=DB_DEVICE_TO_BITSTRING["T"],
                                               device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"])]

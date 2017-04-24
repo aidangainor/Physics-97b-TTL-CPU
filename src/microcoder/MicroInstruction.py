@@ -59,6 +59,9 @@ class MicroInstruction:
             raise Exception("Bit string must be length = 8")
         return bitstring
 
+    def get_all_EEPROM_flags(self):
+        return self.full_ROM_layout
+
     def get_EEPROM_flag_layout(self, EEPROM_num):
         """Grab a specific bit layout of control signals for an EEPROM.
         EEPROM's are indexed starting at 1.

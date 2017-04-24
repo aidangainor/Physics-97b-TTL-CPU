@@ -1,4 +1,4 @@
-"""This file stores constant hash maps for device decoding and decimal to binary ASCII string decoding"""
+"""This file stores constant hash maps for device encoding and decimal to binary ASCII string encoding"""
 
 ALU_OP_TO_BITSTRING = {"ADD" : "11", "OR" : "10", "XOR" : "01", "AND" : "00"}
 

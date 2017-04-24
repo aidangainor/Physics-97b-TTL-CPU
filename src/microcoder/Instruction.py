@@ -1,5 +1,5 @@
 from MicroInstruction import MicroInstruction
-from Decoders import *
+from Encoders import *
 
 class Instruction:
     """Corresponds to an instruction from the ISA level.
