@@ -28,7 +28,6 @@ class HexWriter:
         self.hex_writer[self.write_ptr] = self.default_byte
         self.write_ptr += 1
 
-
     def commit(self):
         self.hex_writer.write_hex_file(self.fname)
 

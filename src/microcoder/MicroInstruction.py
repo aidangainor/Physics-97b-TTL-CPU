@@ -30,22 +30,23 @@ class MicroInstruction:
     clear_PC = "1"
     clear_MAR = "1"
     halt = "0" # This is NAND'ed with clock signal, so when halt = 1 the system clock will stop
-    reset = "0" # This is OR'ed with reset pin signal, so we can't "escape" a reset once pin is unpressed
+    reset = "1" # This is OR'ed with reset pin signal, so we can't "escape" a reset once pin is unpressed
                 # Harware reset is accomplished by setting 4 bit FB register reset pin low and EEPROM address 12 high
     next_micro_inst = "0001" # 4 bits of feedback of what micro instruction to execute next
 
     def __init__(self, **control_flags):
         for flag in control_flags:
-            if control_flags[flag] not in ["0", "1"]:
-                raise Exception("Control flag must be either an ASCII 0 or 1")
-            else:
-                setattr(self, flag, controls_flags[flag])
+            print (control_flags[flag])
+            for char in control_flags[flag]:
+                if char not in ["0", "1"]:
+                    raise Exception("Control flag must be either an ASCII 0 or 1")
+            setattr(self, flag, control_flags[flag])
         # Flag layout for each EEPROM
         # This directly maps to hardware, for example ALU_f0 will emanate from the 1st EEPROM's 2nd I/O pin
         # Clear_PC will emanate from the 3rd EEPROM's 1st I/O pin
         self.EEPROM1_layout = [self.enable_carry_in, self.ALU_f0_f1, self.status_reg_load_select, self.device_onto_db]
         self.EEPROM2_layout = [self.inc_PC, self.inc_MAR, self.device_onto_ab, self.device_write_enable]
-        self.EEPROM3_layout = [self.condition_code, self.write_status_reg, self.inv_A, NOT_USED, NOT_USED, NOT_USED]
+        self.EEPROM3_layout = [self.condition_code, self.write_status_reg, self.inv_A, self.NOT_USED, self.NOT_USED, self.NOT_USED]
         self.EEPROM4_layout = [self.clear_PC, self.clear_MAR, self.halt, self.reset, self.next_micro_inst]
         self.full_ROM_layout = [self.EEPROM1_layout, self.EEPROM2_layout, self.EEPROM3_layout, self.EEPROM4_layout]
 
