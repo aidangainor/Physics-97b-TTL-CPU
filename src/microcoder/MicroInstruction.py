@@ -36,7 +36,6 @@ class MicroInstruction:
 
     def __init__(self, **control_flags):
         for flag in control_flags:
-            print (control_flags[flag])
             for char in control_flags[flag]:
                 if char not in ["0", "1"]:
                     raise Exception("Control flag must be either an ASCII 0 or 1")
@@ -49,6 +48,9 @@ class MicroInstruction:
         self.EEPROM3_layout = [self.condition_code, self.write_status_reg, self.inv_A, self.NOT_USED, self.NOT_USED, self.NOT_USED]
         self.EEPROM4_layout = [self.clear_PC, self.clear_MAR, self.halt, self.reset, self.next_micro_inst]
         self.full_ROM_layout = [self.EEPROM1_layout, self.EEPROM2_layout, self.EEPROM3_layout, self.EEPROM4_layout]
+
+    def pretty_print(self):
+        return [self.generate_EEPROM_bitstring(x) for x in self.get_all_EEPROM_flags()]
 
     def generate_EEPROM_bitstring(self, flag_layout):
         """Create a byte string from a given "flag layout", like from EEPROM1 layout for example
