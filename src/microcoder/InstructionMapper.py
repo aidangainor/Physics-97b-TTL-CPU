@@ -4,7 +4,7 @@ from Encoders import *
 
 # T register acts as a temporary register for all memory transfers
 asm_insts = ["RESET", "HALT", "LOAD_BYTE", "LOAD_IND", "STORE_IND", "ADD", "ADD_WC", "SUB", "AND", "OR", "XOR",
-             "MOV A,T", "MOV B,T", "MOV C,T", "MOV I,T", "MOV J,T", "MOV PSW,T", "MOV T,PSW", "MOV T,J", "MOV T,I", "MOV T,C", "MOV T,B", "MOV T,A",
+             "MOV A,T", "MOV B,T", "MOV C,T", "MOV I,T", "MOV J,T", "MOV FLAGS,T", "MOV T,FLAGS", "MOV T,J", "MOV T,I", "MOV T,C", "MOV T,B", "MOV T,A",
              "JMP_UN", "JMP_Z", "JMP_NZ", "JMP_C", "JMP_NC", "JMP_N", "JMP_NN", "CALL", "RETURN"]
 
 
@@ -20,7 +20,6 @@ asm_to_object = {}
 
 for inst in asm_insts:
     inst_obj = Instruction()
-    asm_to_object[inst] = inst_obj
     # Reset CPU (IJ, FB reg, PC)
     if inst == "RESET":
         inst_obj.add_u_instructions(inst_obj.get_reset_sequence())
@@ -86,11 +85,11 @@ for inst in asm_insts:
         inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"],
                                                     device_write_enable=DB_DEVICE_TO_BITSTRING["J"]))
     # MOV, copy T contents into processor status word (flags register)
-    elif inst == "MOV PSW,T":
+    elif inst == "MOV FLAGS,T":
         inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"],
                                                     status_reg_load_select="1",
                                                     device_write_enable=DB_DEVICE_TO_BITSTRING["PSW"]))
-    elif inst == "MOV T,PSW":
+    elif inst == "MOV T,FLAGS":
         inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["PSW"],
                                                     device_write_enable=DB_DEVICE_TO_BITSTRING["T"]))
     elif inst == "MOV T,J":
@@ -128,4 +127,6 @@ for inst in asm_insts:
     elif inst == "RETURN":
         pass
 
+    # Instruction fetch routine is done completely in microcode
     inst_obj.add_fetch_ir_sequence()
+    asm_to_object[inst] = inst_obj

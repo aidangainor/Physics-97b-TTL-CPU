@@ -8,9 +8,6 @@ class Instruction:
     Micro instructions with "NoneType" in Python are unused, and will be written as 0xFF by EEPROM programmer.
     """
 
-    inst_micro_instructions = [None] * 16 # An instruction consits of 16 micro instructions
-                                          # Note that only a subset of these 16 micro instructions will actually be used
-
     # Rest program counter and MAR, then do instruction fetch
     rst_micro_instructions = [MicroInstruction(clear_PC="0", clear_MAR="0", reset="1")]
     # Output ROM/RAM and clock in instruction register
@@ -43,32 +40,30 @@ class Instruction:
 
     def __init__(self):
         self.instructions_added = 0
+        self.inst_micro_instructions = [None] * 16 # An instruction consits of 16 micro instructions
+                                                   # Note that only a subset of these 16 micro instructions will actually be used
 
-    def add_u_instruction(self, u_inst, i=None):
+    def add_u_instruction(self, u_inst):
         """Add a micro instruction to the instance of an instruction.
-        If i = None, then internal counter is used to append u_inst.
         """
-        if i is None:
-            i = self.instructions_added
-        self.inst_micro_instructions[i] = u_inst
+        self.inst_micro_instructions[self.instructions_added] = u_inst
         self.instructions_added += 1
 
-    def add_u_instructions(self, u_insts, i=None):
+    def add_u_instructions(self, u_insts):
         """Add N micro instructions to instance of an instruction.
         If i = None, then internal counter is used to append u_insts.
         """
         for u_inst in u_insts:
-            self.add_u_instruction(u_inst, i)
+            self.add_u_instruction(u_inst)
 
     def add_fetch_ir_sequence(self, i=None, inc_pc=True):
         """Append a sequence of micro instructions that swap the PC with 16 bit address operand stored in memory.
         Optional i paramater for specifying specific location of where to append PC fetch
         """
-        self.add_u_instructions(self.ir_fetch_instructions, i)
+        self.add_u_instructions(self.ir_fetch_instructions)
 
-    def add_fetch_pc_sequence(self, i=None):
+    def add_fetch_pc_sequence(self):
         """Append a sequence of micro instructions that swap the PC with 16 bit address operand stored in memory.
-        Optional i paramater for specifying specific location of where to append PC fetch
         """
 
     def generate_interrupt_sequence(self):

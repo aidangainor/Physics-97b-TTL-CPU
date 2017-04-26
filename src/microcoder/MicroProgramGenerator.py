@@ -3,12 +3,14 @@ from Instruction import Instruction
 import InstructionMapper as IM
 from HexWriter import HexWriter
 from Encoders import DECIMAL_TO_BITSTRING
+import os
 
 # We need to generate 4 HEX files for each EEPROM connected in parallel
-file_writer_EE1 = HexWriter("rom1.hex")
-file_writer_EE2 = HexWriter("rom2.hex")
-file_writer_EE3 = HexWriter("rom3.hex")
-file_writer_EE4 = HexWriter("rom4.hex")
+prefix = "control_unit" + os.path.sep + "micro_insts_rom"
+file_writer_EE1 = HexWriter(prefix + "1.hex")
+file_writer_EE2 = HexWriter(prefix + "2.hex")
+file_writer_EE3 = HexWriter(prefix + "3.hex")
+file_writer_EE4 = HexWriter(prefix + "4.hex")
 all_file_writers = [file_writer_EE1, file_writer_EE2, file_writer_EE3, file_writer_EE4]
 
 # Go through all possible EEPROM addresses
@@ -32,8 +34,8 @@ def write_micro_instruction(u_inst, file_writers):
             byte_bitstring = u_inst.generate_EEPROM_bitstring(EEPROM_flag_layout)
             file_writer.write_byte(byte_bitstring)
 
-# There are 512 instructions, in that there exist 64 possible opcodes with
-
+# There are 512 instructions, each with 16 possible states, and only 64 possible opcodes
+# The reason behind only 64 opcodes is that we must reserve 3 lines for JMP, interrupt, and reset handling
 for addr in range(512):
     if addr < 64: # For all vanilla instructions (no reset/interrupt/condition)
         if len(IM.asm_insts) > addr:
@@ -51,9 +53,8 @@ for addr in range(512):
                 elif u_inst is not None and i != 15:
                     if inst_obj.get_u_instructions()[i+1] is None:
                         u_inst.set_next_u_inst_addr(DECIMAL_TO_BITSTRING[0])
-                # Go to next sequential u-inst
-                elif u_inst is not None:
-                    u_inst.set_next_u_inst_addr(DECIMAL_TO_BITSTRING[i+1])
+                    else:
+                        u_inst.set_next_u_inst_addr(DECIMAL_TO_BITSTRING[i+1])
 
                 write_micro_instruction(u_inst, all_file_writers)
                 if u_inst is not None:
