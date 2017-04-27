@@ -58,10 +58,10 @@ class MicroInstruction:
         # Flag layout for each EEPROM
         # This directly maps to hardware, for example ALU_f0 will emanate from the 1st EEPROM's 2nd I/O pin
         # Clear_PC will emanate from the 3rd EEPROM's 1st I/O pin
-        EEPROM1_layout = [self.enable_carry_in, self.ALU_f0_f1, self.status_reg_load_select, self.device_onto_db]
-        EEPROM2_layout = [self.inc_PC, self.inc_MAR, self.device_onto_ab, self.device_write_enable]
-        EEPROM3_layout = [self.condition_code, self.write_status_reg, self.inv_A, self.NOT_USED, self.NOT_USED, self.NOT_USED]
-        EEPROM4_layout = [self.clear_PC, self.clear_MAR, self.halt, self.reset, self.next_micro_inst]
+        EEPROM1_layout = [self.device_onto_db, self.status_reg_load_select, self.ALU_f0_f1, self.enable_carry_in]
+        EEPROM2_layout = [self.device_onto_ab, self.device_write_enable, self.inc_MAR, self.inc_PC]
+        EEPROM3_layout = [self.NOT_USED, self.NOT_USED, self.NOT_USED, self.write_status_reg, self.inv_A, self.condition_code]
+        EEPROM4_layout = [self.next_micro_inst, self.halt, self.reset, self.clear_MAR, self.clear_PC]
         return [EEPROM1_layout, EEPROM2_layout, EEPROM3_layout, EEPROM4_layout]
 
     def get_EEPROM_flag_layout(self, EEPROM_num):

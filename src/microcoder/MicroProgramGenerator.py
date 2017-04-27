@@ -72,7 +72,7 @@ for addr in range(512):
         # Fetch the new program counter
         jmp_condition_met_inst.add_fetch_pc_sequence()
         # Get instruction new program counter value points to
-        jmp_condition_met_inst.add_fetch_ir_sequence()
+        jmp_condition_met_inst.add_fetch_ir_sequence(inc_PC=False)
 
         if len(IM.asm_insts) > addr-64: # Subtract 64 to take into account the condition met signal being on
             asm_mnemonic = IM.asm_insts[addr-64]

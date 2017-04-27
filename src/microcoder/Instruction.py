@@ -56,11 +56,14 @@ class Instruction:
         for u_inst in u_insts:
             self.add_u_instruction(u_inst)
 
-    def add_fetch_ir_sequence(self, i=None, inc_pc=True):
+    def add_fetch_ir_sequence(self, inc_PC=True):
         """Append a sequence of micro instructions that swap the PC with 16 bit address operand stored in memory.
         Optional i paramater for specifying specific location of where to append PC fetch
         """
-        self.add_u_instructions(self.ir_fetch_instructions)
+        if inc_PC:
+            self.add_u_instructions(self.ir_fetch_instructions)
+        else:
+            self.add_u_instruction(self.ir_fetch_instructions[1])
 
     def add_fetch_pc_sequence(self):
         """Append a sequence of micro instructions that swap the PC with 16 bit address operand stored in memory.
