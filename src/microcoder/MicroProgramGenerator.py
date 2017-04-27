@@ -34,7 +34,7 @@ def write_micro_instruction(u_inst, file_writers):
             byte_bitstring = u_inst.generate_EEPROM_bitstring(EEPROM_flag_layout)
             file_writer.write_byte(byte_bitstring)
 
-# There are 512 instructions, each with 16 possible states, and only 64 possible opcodes
+# There are 512 instructions, each with 16 possible state transitions (micro instructions), and only 64 possible opcodes
 # The reason behind only 64 opcodes is that we must reserve 3 lines for JMP, interrupt, and reset handling
 for addr in range(512):
     if addr < 64: # For all vanilla instructions (no reset/interrupt/condition)
@@ -44,7 +44,7 @@ for addr in range(512):
             print("\t\t   Opcode: " + str(hex(addr)))
             print ("\t   EEPROM 1     EEPROM 2    EEPROM 3    EEPROM 4")
             inst_obj = IM.asm_to_object[asm_mnemonic] # Get object that corresponds to name of inst
-            for i in range(16):
+            for i in range(16): # Go through 16 possible microinstructions
                 u_inst = inst_obj.get_u_instructions()[i]
                 # If last micro instruction is used, set its next FB addr to 0
                 if i == 15 and u_inst is not None:
@@ -62,9 +62,13 @@ for addr in range(512):
             print()
         else:
             # Means there is no op code corresponding to this address, just write all 11111....s
-            write_micro_instruction(None, all_file_writers)
+            for i in range(16):
+                write_micro_instruction(None, all_file_writers)
 
     elif addr < 128: # Addr 64 to 127 = for condition met
+        if asm_mnemonic.startswith("JMP"):
+            pass
+
         for i in range(16):
             write_micro_instruction(None, all_file_writers)
     elif addr < 256: # Addr 128 - 255 = for interrupt
