@@ -88,9 +88,9 @@ for inst in asm_insts:
     elif inst == "MOV FLAGS,T":
         inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"],
                                                     status_reg_load_select="1",
-                                                    device_write_enable=DB_DEVICE_TO_BITSTRING["PSW"]))
+                                                    write_status_reg="1"))
     elif inst == "MOV T,FLAGS":
-        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["PSW"],
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["FLAGS"],
                                                     device_write_enable=DB_DEVICE_TO_BITSTRING["T"]))
     elif inst == "MOV T,J":
         inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["J"],

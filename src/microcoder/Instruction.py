@@ -65,6 +65,7 @@ class Instruction:
     def add_fetch_pc_sequence(self):
         """Append a sequence of micro instructions that swap the PC with 16 bit address operand stored in memory.
         """
+        self.add_u_instructions(self.fetch_new_pc_instructions)
 
     def generate_interrupt_sequence(self):
         """Return a constant interrupt handling routine (in microcode, of course!).

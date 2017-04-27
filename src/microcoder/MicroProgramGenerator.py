@@ -2,7 +2,7 @@ from MicroInstruction import MicroInstruction
 from Instruction import Instruction
 import InstructionMapper as IM
 from HexWriter import HexWriter
-from Encoders import DECIMAL_TO_BITSTRING
+from Encoders import DECIMAL_TO_BITSTRING, CONDITION_TO_BITSTRING
 import os
 
 # We need to generate 4 HEX files for each EEPROM connected in parallel
@@ -66,11 +66,26 @@ for addr in range(512):
                 write_micro_instruction(None, all_file_writers)
 
     elif addr < 128: # Addr 64 to 127 = for condition met
-        if asm_mnemonic.startswith("JMP"):
-            pass
+        jmp_condition_met_inst = Instruction()
+        # If the condition met signal propagates before we increment FB register, make sure condition signal stays on
+        jmp_condition_met_inst.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["UN"]))
+        # Fetch the new program counter
+        jmp_condition_met_inst.add_fetch_pc_sequence()
+        # Get instruction new program counter value points to
+        jmp_condition_met_inst.add_fetch_ir_sequence()
 
-        for i in range(16):
-            write_micro_instruction(None, all_file_writers)
+        if len(IM.asm_insts) > addr-64: # Subtract 64 to take into account the condition met signal being on
+            asm_mnemonic = IM.asm_insts[addr-64]
+            if asm_mnemonic.startswith("JMP"):
+                for i in range(16):
+                    u_inst = jmp_condition_met_inst.get_u_instructions()[i]
+                    write_micro_instruction(u_inst, all_file_writers)
+            else:
+                for i in range(16):
+                    write_micro_instruction(None, all_file_writers)
+        else:
+            for i in range(16):
+                write_micro_instruction(None, all_file_writers)
     elif addr < 256: # Addr 128 - 255 = for interrupt
         for i in range(16):
             write_micro_instruction(None, all_file_writers)
