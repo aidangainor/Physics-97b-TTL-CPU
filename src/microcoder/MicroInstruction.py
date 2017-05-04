@@ -60,7 +60,7 @@ class MicroInstruction:
         # Clear_PC will emanate from the 3rd EEPROM's 1st I/O pin
         # Order is like:     [7th bit, 6th bit, ..., 1st bit, 0th bit] for these arrays below
         EEPROM1_layout = [self.device_onto_db, self.status_reg_load_select, self.NOT_USED, self.NOT_USED, self.NOT_USED]
-        EEPROM2_layout = [self.device_onto_ab, self.device_write_enable, self.inc_MAR, self.inc_PC]
+        EEPROM2_layout = [self.device_write_enable, self.device_onto_ab, self.inc_MAR, self.inc_PC]
         EEPROM3_layout = [self.enable_carry_in, self.ALU_f0_f1, self.write_status_reg, self.inv_A, self.condition_code]
         EEPROM4_layout = [self.next_micro_inst, self.halt, self.reset, self.clear_MAR, self.clear_PC]
         return [EEPROM1_layout, EEPROM2_layout, EEPROM3_layout, EEPROM4_layout]
