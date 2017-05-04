@@ -34,6 +34,21 @@ def write_micro_instruction(u_inst, file_writers):
             byte_bitstring = u_inst.generate_EEPROM_bitstring(EEPROM_flag_layout)
             file_writer.write_byte(byte_bitstring)
 
+# Take in instruction object and index for current micro instruction
+# Will set the FB register for next micro instruction
+def set_fb_reg_addr(inst_obj, i):
+    u_inst = inst_obj.get_u_instructions()[i]
+    # If last micro instruction is used, set its next FB addr to 0
+    if i == 15 and u_inst is not None:
+        u_inst.set_next_u_inst_addr(DECIMAL_TO_BITSTRING[0])
+    # Means we are at last u-inst, so loop back to 0 on next instruction
+    elif u_inst is not None and i != 15:
+        if inst_obj.get_u_instructions()[i+1] is None:
+            u_inst.set_next_u_inst_addr(DECIMAL_TO_BITSTRING[0])
+        else:
+            # We have another micro instruction after this one, so make sure we execute that micro instruction next
+            u_inst.set_next_u_inst_addr(DECIMAL_TO_BITSTRING[i+1])
+
 # There are 512 instructions, each with 16 possible state transitions (micro instructions), and only 64 possible opcodes
 # The reason behind only 64 opcodes is that we must reserve 3 lines for JMP, interrupt, and reset handling
 for addr in range(512):
@@ -46,16 +61,7 @@ for addr in range(512):
             inst_obj = IM.asm_to_object[asm_mnemonic] # Get object that corresponds to name of inst
             for i in range(16): # Go through 16 possible microinstructions
                 u_inst = inst_obj.get_u_instructions()[i]
-                # If last micro instruction is used, set its next FB addr to 0
-                if i == 15 and u_inst is not None:
-                    inst_obj.set_next_u_inst_addr(DECIMAL_TO_BITSTRING[0])
-                # Means we are at last u-inst, so loop back to 0 on next instruction
-                elif u_inst is not None and i != 15:
-                    if inst_obj.get_u_instructions()[i+1] is None:
-                        u_inst.set_next_u_inst_addr(DECIMAL_TO_BITSTRING[0])
-                    else:
-                        u_inst.set_next_u_inst_addr(DECIMAL_TO_BITSTRING[i+1])
-
+                set_fb_reg_addr(inst_obj, i)
                 write_micro_instruction(u_inst, all_file_writers)
                 if u_inst is not None:
                     print("u-inst " + str(i) + ": " + str(u_inst.pretty_print()))
@@ -78,6 +84,7 @@ for addr in range(512):
             asm_mnemonic = IM.asm_insts[addr-64]
             if asm_mnemonic.startswith("JMP"):
                 for i in range(16):
+                    set_fb_reg_addr(jmp_condition_met_inst, i)
                     u_inst = jmp_condition_met_inst.get_u_instructions()[i]
                     write_micro_instruction(u_inst, all_file_writers)
             else:

@@ -128,5 +128,7 @@ for inst in asm_insts:
         pass
 
     # Instruction fetch routine is done completely in microcode
-    inst_obj.add_fetch_ir_sequence()
+    # Instruction fetch routine is special for reset instruction
+    if inst != "RESET":
+        inst_obj.add_fetch_ir_sequence()
     asm_to_object[inst] = inst_obj
