@@ -1,9 +1,12 @@
 from MicroInstruction import MicroInstruction
 from Instruction import Instruction
 import InstructionMapper as IM
-from HexWriter import HexWriter
 from Encoders import DECIMAL_TO_BITSTRING, CONDITION_TO_BITSTRING
 import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from HexWriter import HexWriter
 
 # We need to generate 4 HEX files for each EEPROM connected in parallel
 prefix = "control_unit" + os.path.sep + "micro_insts_rom"
