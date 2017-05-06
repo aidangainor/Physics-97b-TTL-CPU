@@ -27,19 +27,41 @@ class Assembler:
             base = 2
         else:
             raise Exception("Number must end with H, D, or B to signify base")
-        return int(value_string, base)
+        value = int(value_string, base)
+        return value
+
+    def convert_to_int8(self, string):
+        value = self.convert_to_int(string)
+        if value > 255 or value < 0:
+            raise Exception("Operand must be in range 0 to 255 inclusive")
+        return value
+
+    def convert_to_int16(self, string):
+        value = self.convert_to_int(string)
+        if value > 65535 or value < 0:
+            raise Exception("Operand must be in range 0 to 65535 inclusive")
+        low_byte = value & 255
+        high_byte = value >> 8
+        return [low_byte, high_byte]
 
     def parse_and_map(self):
         parsed_lines = []
         for src_line in self.lines:
+            src_line = src_line.split(";")[0] # Remove comments
             stripped_line = src_line.strip().upper()
-            # Deal with where byte operand appears (on same line or next line)
-            if "LOAD_BYTE" in stripped_line:
+            # Deal with where byte / 2 byte operand appear
+            if "LOAD_BYTE" in stripped_line or "JMP" in stripped_line:
                 split_line = stripped_line.split(" ")
                 if len(split_line) != 2:
                     raise Exception("Opcode and operand must be on same line")
-                parsed_lines.append(asm_to_opcode["LOAD_BYTE"])
-                parsed_lines.append(self.convert_to_int(split_line[1]))
+                parsed_lines.append(asm_to_opcode[split_line[0]])
+                if "JMP" in stripped_line:
+                    operand_addr = self.convert_to_int16(split_line[1])
+                    # Little endian byte order
+                    parsed_lines.append(operand_addr[0])
+                    parsed_lines.append(operand_addr[1])
+                else:
+                    parsed_lines.append(self.convert_to_int8(split_line[1]))
             # We just ignore blank lines
             elif stripped_line != "":
                 # If not opcode, lets just assume its data or fail miserably
