@@ -18,25 +18,23 @@ class Instruction:
 
     # It is quite common to fetch two bytes from memory that are pointed to by PC + 1 and PC + 2
     # These values are loading into PC in little endian format, so lets store this sequence of u-insts
-    fetch_new_pc_instructions = [MicroInstruction(inc_PC="1")]
     # Although we specify "PC_LOW" as our write target, the control unit actually writes into the PC low buffer so we can keep the original PC for next u-inst
-    fetch_new_pc_instructions.append(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
-                                                      device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"],
-                                                      device_write_enable=DB_DEVICE_TO_BITSTRING["PC_LOW"],
-                                                      inc_PC="1"))
+    fetch_new_pc_instructions = [MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
+                                                  device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"],
+                                                  device_write_enable=DB_DEVICE_TO_BITSTRING["PC_LOW"],
+                                                  inc_PC="1")]
     # Now when we specify "PC_HIGH" as write target, the control unit actually specifies PC_HIGH to clock in data bus contents while PC_LOW clocks in PC buffer contents
     # This is done in parallel
-    fetch_new_pc_instructions.append(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
+    fetch_new_pc_instructions.append(MicroInstruction(inc_PC="0", device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
                                                       device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"],
                                                       device_write_enable=DB_DEVICE_TO_BITSTRING["PC_HIGH"]))
 
-    # Auto generate instruction fetch, instruction fetch is always last 2 possible micro instructions of an instruction
-    # Increment program counter first
-    ir_fetch_instructions = [MicroInstruction(inc_PC="1", device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"])]
+    # Auto generate instruction fetch, instruction fetch is always last micro instruction of an instruction
+    # Program counter is incremented during instruction execution
     # Output ROM/RAM and clock in instruction register
-    ir_fetch_instructions.append(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
+    ir_fetch_instructions = [MicroInstruction(inc_PC="0", device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
                                                   device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"],
-                                                  device_write_enable=DB_DEVICE_TO_BITSTRING["IR"]))
+                                                  device_write_enable=DB_DEVICE_TO_BITSTRING["IR"])]
 
     def __init__(self):
         self.instructions_added = 0
@@ -51,24 +49,22 @@ class Instruction:
 
     def add_u_instructions(self, u_insts):
         """Add N micro instructions to instance of an instruction.
-        If i = None, then internal counter is used to append u_insts.
         """
         for u_inst in u_insts:
             self.add_u_instruction(u_inst)
 
-    def add_fetch_ir_sequence(self, inc_PC=True):
-        """Append a sequence of micro instructions that swap the PC with 16 bit address operand stored in memory.
-        Optional i paramater for specifying specific location of where to append PC fetch
+    def add_fetch_ir_sequence(self):
+        """Append a sequence of micro instructions that fetch next instruction
         """
-        if inc_PC:
-            self.add_u_instructions(self.ir_fetch_instructions)
-        else:
-            self.add_u_instruction(self.ir_fetch_instructions[1])
+        self.add_u_instructions(self.ir_fetch_instructions)
 
     def add_fetch_pc_sequence(self):
         """Append a sequence of micro instructions that swap the PC with 16 bit address operand stored in memory.
         """
         self.add_u_instructions(self.fetch_new_pc_instructions)
+
+    def add_skip_two_bytes_u_insts(self):
+        self.add_u_instructions([MicroInstruction(inc_PC="1"), MicroInstruction(inc_PC="1")])
 
     def generate_interrupt_sequence(self):
         """Return a constant interrupt handling routine (in microcode, of course!).

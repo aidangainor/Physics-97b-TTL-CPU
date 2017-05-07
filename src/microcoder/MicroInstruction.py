@@ -14,7 +14,7 @@ class MicroInstruction:
                             # PC low buffer CAN'T drive databus
 
     # EEPROM 2 flags here
-    inc_PC = "0"
+    inc_PC = "1"
     inc_MAR = "0"
     device_onto_ab = "00" # What 16 bit register is active on address bus? 0 = PC, 1 = MAR
     device_write_enable = "1111" # 4 bit code for what device is enabled to clock in data bus value next clock cycle
