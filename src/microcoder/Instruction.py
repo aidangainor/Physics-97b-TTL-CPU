@@ -9,9 +9,9 @@ class Instruction:
     """
 
     # Rest program counter and MAR, then do instruction fetch
-    rst_micro_instructions = [MicroInstruction(clear_PC="0", clear_MAR="0", reset="1")]
+    rst_micro_instructions = [MicroInstruction(inc_PC="0", clear_PC="0", clear_MAR="0", reset="1")]
     # Output ROM/RAM and clock in instruction register
-    rst_micro_instructions.append(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
+    rst_micro_instructions.append(MicroInstruction(inc_PC="0", device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"],
                                                    device_write_enable=DB_DEVICE_TO_BITSTRING["IR"],
                                                    reset="1"))
