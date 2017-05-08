@@ -1,9 +1,9 @@
 ; Makes a visual display for the B register where lights increment additively and sequentially
 
 load_byte 1d ;
-mov a,t ;
-load_byte 2d ;
 mov b,t ;
+load_byte 2d ;
+mov a,t ;
 add ;
 mov b,t ;
 load_byte 4d ;
