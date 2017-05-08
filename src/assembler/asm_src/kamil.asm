@@ -1,0 +1,33 @@
+; Makes a visual display for the B register where lights increment additively and sequentially
+
+load_byte 1d ;
+mov a,t ;
+load_byte 2d ;
+mov b,t ;
+add ;
+mov b,t ;
+load_byte 4d ;
+mov a,t ;
+add ;
+mov b,t ;
+load_byte 8d ;
+mov a,t ;
+add ;
+mov b,t ;
+load_byte 16d ;
+mov a,t ;
+add ;
+mov b,t ;
+load_byte 32d ;
+mov a,t ;
+add ;
+mov b,t ;
+load_byte 64d ;
+mov a,t ;
+add ;
+mov b,t ;
+load_byte 255d ;
+mov a,t ;
+add ;
+mov b,t ;
+jmp_un 0d ;
