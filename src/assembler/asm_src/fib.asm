@@ -6,4 +6,4 @@ add
 mov a,t
 add
 mov b,t
-jmp_un 4D
+jmp_un 6D
