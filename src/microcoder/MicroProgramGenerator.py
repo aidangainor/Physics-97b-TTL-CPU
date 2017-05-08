@@ -83,6 +83,12 @@ for addr in range(512):
         # Get instruction new program counter value points to
         jmp_condition_met_inst.add_fetch_ir_sequence()
 
+        # Go through all micro instructions, and make sure the condition test code in always "unconditional"
+        # The means that the condition met EEPROM pin is always high
+        for u_inst in jmp_condition_met_inst.get_u_instructions():
+            if u_inst != None:
+                u_inst.set_condition_code_on()
+
         if len(IM.asm_insts) > addr-64: # Subtract 64 to take into account the condition met signal being on
             asm_mnemonic = IM.asm_insts[addr-64]
             if asm_mnemonic.startswith("JMP"):

@@ -74,6 +74,11 @@ class MicroInstruction:
         else:
             return self.get_all_EEPROM_flags()[EEPROM_num-1]
 
+    def set_condition_code_on(self):
+        """Force condition met bit high
+        """
+        self.condition_code = "000"
+
     def set_next_u_inst_addr(self, addr):
         """Set the 4 bit address to load into feedback register next clock cycle.
         """
