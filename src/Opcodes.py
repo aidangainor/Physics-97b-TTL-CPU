@@ -1,7 +1,8 @@
 # T register acts as a temporary register for all memory transfers
+# order dictates opcode = eg asm_inst[op_code] = instruction
 asm_insts = ["RESET", "HALT", "LOAD_BYTE", "LOAD_IND", "STORE_IND", "ADD", "ADD_WC", "SUB", "AND", "OR", "XOR",
              "MOV A,T", "MOV B,T", "MOV C,T", "MOV I,T", "MOV J,T", "MOV FLAGS,T", "MOV T,FLAGS", "MOV T,J", "MOV T,I", "MOV T,C", "MOV T,B", "MOV T,A",
-             "JMP_UN", "JMP_Z", "JMP_NZ", "JMP_C", "JMP_NC", "JMP_N", "JMP_NN", "CALL", "RETURN"]
+             "JMP_UN", "JMP_Z", "JMP_NZ", "JMP_C", "JMP_NC", "JMP_N", "JMP_NN", "CALL", "RETURN", "NOP"]
 
 
 # Map assembly mnemonic to integer opcode

@@ -22,9 +22,7 @@ class Instruction:
     fetch_new_pc_instructions = [MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
                                                   device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"],
                                                   device_write_enable=DB_DEVICE_TO_BITSTRING["PC_LOW"],
-                                                  inc_PC="0")]
-
-    fetch_new_pc_instructions.append(MicroInstruction(inc_PC="1"))
+                                                  inc_PC="1")]
     # Now when we specify "PC_HIGH" as write target, the control unit actually specifies PC_HIGH to clock in data bus contents while PC_LOW clocks in PC buffer contents
     # This is done in parallel
     fetch_new_pc_instructions.append(MicroInstruction(inc_PC="0", device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
@@ -40,7 +38,7 @@ class Instruction:
 
     def __init__(self):
         self.instructions_added = 0
-        self.inst_micro_instructions = [None] * 16 # An instruction consits of 16 micro instructions
+        self.inst_micro_instructions = [None] * 16 # An instruction consists of 16 micro instructions
                                                    # Note that only a subset of these 16 micro instructions will actually be used
 
     def add_u_instruction(self, u_inst):
@@ -64,6 +62,12 @@ class Instruction:
         """Append a sequence of micro instructions that swap the PC with 16 bit address operand stored in memory.
         """
         self.add_u_instructions(self.fetch_new_pc_instructions)
+
+    def add_def_instruction(self):
+        """Append a sequence of 4 micro instructions that does nothing to the computers state
+        """
+        self.add_u_instructions([MicroInstruction(inc_PC="0"), MicroInstruction(inc_PC="0"), MicroInstruction(inc_PC="0"), MicroInstruction(inc_PC="0")])
+
 
     def add_skip_two_bytes_u_insts(self):
         self.add_u_instructions([MicroInstruction(inc_PC="1"), MicroInstruction(inc_PC="1")])

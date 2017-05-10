@@ -14,7 +14,7 @@ class MicroInstruction:
                             # PC low buffer CAN'T drive databus
 
     # EEPROM 2 flags here
-    inc_PC = "1"
+    inc_PC = "1" #active high
     inc_MAR = "0"
     device_onto_ab = "00" # What 16 bit register is active on address bus? 0 = PC, 1 = MAR
     device_write_enable = "1111" # 4 bit code for what device is enabled to clock in data bus value next clock cycle
@@ -27,8 +27,8 @@ class MicroInstruction:
     inv_A = "0" # Inverse values of A input
 
     # EEPROM 4 flags here
-    clear_PC = "1"
-    clear_MAR = "1"
+    clear_PC = "1" #active low
+    clear_MAR = "1" #acive low
     halt = "0" # This is NAND'ed with clock signal, so when halt = 1 the system clock will stop
     reset = "1" # This is OR'ed with reset pin signal, so we can't "escape" a reset once pin is unpressed
                 # Harware reset is accomplished by setting 4 bit FB register reset pin low and EEPROM address 12 high

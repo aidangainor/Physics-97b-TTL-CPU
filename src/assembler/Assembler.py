@@ -63,6 +63,11 @@ class Assembler:
                 else:
                     parsed_lines.append(self.convert_to_int8(split_line[1]))
             # We just ignore blank lines
+            if "NOP" in stripped_line and stripped_line.length > 3
+                if isinstance(int(split_line[3:]), int)
+                    raise Exception("Multi-NOP must end with an integer")
+                for i in range(int(split_line[3:]))
+                    parsed_lines.append(asm_to_opcode["NOP"])
             elif stripped_line != "":
                 # If not opcode, lets just assume its data or fail miserably
                 parsed_lines.append(asm_to_opcode[stripped_line])

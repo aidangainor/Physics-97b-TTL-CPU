@@ -32,9 +32,9 @@ for i in range(256):
     tens_place_digit = int((i%100)/10.0)
     hundreds_place_digit = int(i/100.0)
 
-    file_writer_1s.write_byte(seven_seg_econding[ones_place_digit])
-    file_writer_10s.write_byte(seven_seg_econding[tens_place_digit])
-    file_writer_100s.write_byte(seven_seg_econding[hundreds_place_digit])
+    file_writer_1s.write_byte(seven_seg_encoding[ones_place_digit])
+    file_writer_10s.write_byte(seven_seg_encoding[tens_place_digit])
+    file_writer_100s.write_byte(seven_seg_encoding[hundreds_place_digit])
 
 # Write all hex files to disk
 for file_writer in all_file_writers:

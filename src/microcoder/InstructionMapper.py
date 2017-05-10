@@ -127,6 +127,8 @@ for inst in asm_insts:
         pass
     elif inst == "RETURN":
         pass
+    elif inst == "NOP":
+        inst_obj.add_def_instruction()
 
     # Instruction fetch routine is done completely in microcode
     # Instruction fetch routine is special for reset instruction
