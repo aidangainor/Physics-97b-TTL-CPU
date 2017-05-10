@@ -22,7 +22,9 @@ class Instruction:
     fetch_new_pc_instructions = [MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
                                                   device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"],
                                                   device_write_enable=DB_DEVICE_TO_BITSTRING["PC_LOW"],
-                                                  inc_PC="1")]
+                                                  inc_PC="0")]
+
+    fetch_new_pc_instructions.append(MicroInstruction(inc_PC="1"))
     # Now when we specify "PC_HIGH" as write target, the control unit actually specifies PC_HIGH to clock in data bus contents while PC_LOW clocks in PC buffer contents
     # This is done in parallel
     fetch_new_pc_instructions.append(MicroInstruction(inc_PC="0", device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
