@@ -66,7 +66,7 @@ class Instruction:
     def add_def_instruction(self):
         """Append a sequence of 4 micro instructions that does nothing to the computers state
         """
-        self.add_u_instructions([MicroInstruction(inc_PC="0"), MicroInstruction(inc_PC="0"), MicroInstruction(inc_PC="0"), MicroInstruction(inc_PC="0")])
+        self.add_u_instructions([MicroInstruction(inc_PC="0"), MicroInstruction(inc_PC="0"), MicroInstruction(inc_PC="0"), MicroInstruction(inc_PC="1")])
 
 
     def add_skip_two_bytes_u_insts(self):

@@ -63,10 +63,14 @@ class Assembler:
                 else:
                     parsed_lines.append(self.convert_to_int8(split_line[1]))
             # We just ignore blank lines
-            if "NOP" in stripped_line and stripped_line.length > 3
-                if isinstance(int(split_line[3:]), int)
+            elif "NOP" in stripped_line and len(stripped_line) > 3:
+                num_nops = 1
+                # We allow user to input a number after nop operation to indicate how many nops occur
+                try:
+                    num_ops = int(stripped_line[4:])
+                except ValueError:
                     raise Exception("Multi-NOP must end with an integer")
-                for i in range(int(split_line[3:]))
+                for i in range(num_ops):
                     parsed_lines.append(asm_to_opcode["NOP"])
             elif stripped_line != "":
                 # If not opcode, lets just assume its data or fail miserably

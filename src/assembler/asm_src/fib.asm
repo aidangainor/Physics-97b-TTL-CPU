@@ -6,4 +6,5 @@ add
 mov a,t
 add
 mov b,t
+nop 5
 jmp_un 6D
