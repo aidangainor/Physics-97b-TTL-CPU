@@ -4,7 +4,8 @@ load_byte 1d
 mov b,t
 add
 mov a,t
+output
 add
 mov b,t
-nop 5
+output
 jmp_un 6D
