@@ -129,6 +129,9 @@ for inst in asm_insts:
         pass
     elif inst == "NOP":
         inst_obj.add_def_instruction()
+    elif inst == "OUTPUT":
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"],
+                                                    device_write_enable=DB_DEVICE_TO_BITSTRING["OUTPUT"]))
 
     # Instruction fetch routine is done completely in microcode
     # Instruction fetch routine is special for reset instruction
