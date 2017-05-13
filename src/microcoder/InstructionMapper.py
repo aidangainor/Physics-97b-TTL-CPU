@@ -110,25 +110,25 @@ for inst in asm_insts:
         inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["A"],
                                                     device_write_enable=DB_DEVICE_TO_BITSTRING["T"]))
     elif inst == "JMP_UN":
-        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["UN"]))
+        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["UN"], write_condition_bit="0"))
         inst_obj.add_skip_two_bytes_u_insts() # A jump instruction takes up 3 bytes in memory, so we must skip them when condition not met
     elif inst == "JMP_Z":
-        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["Z"]))
+        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["Z"], write_condition_bit="0"))
         inst_obj.add_skip_two_bytes_u_insts()
     elif inst == "JMP_NZ":
-        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["NZ"]))
+        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["NZ"], write_condition_bit="0"))
         inst_obj.add_skip_two_bytes_u_insts()
     elif inst == "JMP_C":
-        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["C"]))
+        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["C"], write_condition_bit="0"))
         inst_obj.add_skip_two_bytes_u_insts()
     elif inst == "JMP_NC":
-        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["NC"]))
+        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["NC"], write_condition_bit="0"))
         inst_obj.add_skip_two_bytes_u_insts()
     elif inst == "JMP_N":
-        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["N"]))
+        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["N"], write_condition_bit="0"))
         inst_obj.add_skip_two_bytes_u_insts()
     elif inst == "JMP_NN":
-        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["NN"]))
+        inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["NN"], write_condition_bit="0"))
         inst_obj.add_skip_two_bytes_u_insts()
     elif inst == "CALL":
         pass

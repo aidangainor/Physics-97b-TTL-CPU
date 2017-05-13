@@ -9,12 +9,11 @@ class Instruction:
     """
 
     # Rest program counter and MAR, then do instruction fetch
-    rst_micro_instructions = [MicroInstruction(inc_PC="0", clear_PC="0", clear_MAR="0", reset="1")]
+    rst_micro_instructions = [MicroInstruction(inc_PC="0", clear_PC="0", clear_MAR="0", clear_condition_bit="0")]
     # Output ROM/RAM and clock in instruction register
     rst_micro_instructions.append(MicroInstruction(inc_PC="0", device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"],
-                                                   device_write_enable=DB_DEVICE_TO_BITSTRING["IR"],
-                                                   reset="1"))
+                                                   device_write_enable=DB_DEVICE_TO_BITSTRING["IR"]))
 
     # It is quite common to fetch two bytes from memory that are pointed to by PC + 1 and PC + 2
     # These values are loading into PC in little endian format, so lets store this sequence of u-insts
@@ -32,7 +31,7 @@ class Instruction:
     # Auto generate instruction fetch, instruction fetch is always last micro instruction of an instruction
     # Program counter is incremented during instruction execution
     # Output ROM/RAM and clock in instruction register
-    ir_fetch_instructions = [MicroInstruction(inc_PC="0", device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
+    ir_fetch_instructions = [MicroInstruction(inc_PC="0", clear_condition_bit="0", device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
                                                   device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"],
                                                   device_write_enable=DB_DEVICE_TO_BITSTRING["IR"])]
 
