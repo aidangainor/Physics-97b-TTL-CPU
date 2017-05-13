@@ -29,9 +29,8 @@ class MicroInstruction:
     # EEPROM 4 flags here
     clear_PC = "1" #active low
     clear_MAR = "1" #acive low
-    halt = "0" # This is NAND'ed with clock signal, so when halt = 1 the system clock will stop
-    reset = "1" # This is OR'ed with reset pin signal, so we can't "escape" a reset once pin is unpressed
-                # Harware reset is accomplished by setting 4 bit FB register reset pin low and EEPROM address 12 high
+    inc_SP = "0" # active high, increment stack pointer
+    dec_SP = "1" # active low, decrement stack pointer
     next_micro_inst = "0000" # 4 bits of feedback of what micro instruction to execute next
 
     def __init__(self, **control_flags):
@@ -62,7 +61,7 @@ class MicroInstruction:
         EEPROM1_layout = [self.device_onto_db, self.status_reg_load_select, self.NOT_USED, self.NOT_USED, self.NOT_USED]
         EEPROM2_layout = [self.device_write_enable, self.device_onto_ab, self.inc_MAR, self.inc_PC]
         EEPROM3_layout = [self.enable_carry_in, self.ALU_f0_f1, self.write_status_reg, self.inv_A, self.condition_code]
-        EEPROM4_layout = [self.next_micro_inst, self.halt, self.reset, self.clear_MAR, self.clear_PC]
+        EEPROM4_layout = [self.next_micro_inst, self.dec_SP, self.inc_SP, self.clear_MAR, self.clear_PC]
         return [EEPROM1_layout, EEPROM2_layout, EEPROM3_layout, EEPROM4_layout]
 
     def get_EEPROM_flag_layout(self, EEPROM_num):

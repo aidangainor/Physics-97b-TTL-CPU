@@ -18,12 +18,33 @@ array_init_start:
   mov t,j                     ; Move J register (lower byte) to T (T = J)
   mov b,t                     ; Move T register to B register (B = T)
   load_byte 1d                ; let the value 1 indicate "True", so by default
+  store_ind
   xor                         ; T = A xor B, this is basically an equality check
                               ; If j == 255, that means we are done initializing our array so lets break loop
   jmp_nz &array_init_start    ; Go back to loop start, and stop looping when j == 255
 
 load_byte 2d      ; We are going to reset the J register to 2, why thought? It is because 2 is the first prime number
-mov j,t           ; J = 2
+mov j,t           ; J = 2, since J is basically a reference to a number 0 thru 255
+                  ; The value in RAM pointed by memory address in IJ is either 0 for not prime, and 1 for prime
+
+mov t,j
+mov a,t           ; Load a and b with current prime found, and compute the square
+mov b,t
+call &multiply_subroutine
+jmp_c &outside_loop_end
+
+; We are done computing primes, so now print them all out
+outside_loop_end:
+  load_byte 255d  ; Max number to see if its prime
+  mov b,t         ; Put 255 in b register
+  load_byte 2d    ; Reset J to 2, since we know 2 is prime
+  mov j,t
+
+  mov a,j
+  xor             ; Check if J == 255
+  jmp_z &print_loop
+
+
 
 
 ; Multiply two numbers stored in the ALU A and B input registers

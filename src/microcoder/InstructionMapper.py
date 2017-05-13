@@ -16,9 +16,9 @@ for inst in asm_insts:
     # Reset CPU (IJ, FB reg, PC)
     if inst == "RESET":
         inst_obj.add_u_instructions(inst_obj.get_reset_sequence())
-    # Halt CPU clock
+    # Halt CPU by not incrementing program counter and feeding back into self (don't do instruction fetch!)
     elif inst == "HALT":
-        inst_obj.add_u_instruction(MicroInstruction(halt="1"))
+        inst_obj.add_u_instruction(MicroInstruction(inc_PC="0"))
     # Load immediate byte
     elif inst == "LOAD_BYTE":
         load_byte_u_insts = [MicroInstruction(inc_PC="1", device_onto_ab=AB_DEVICE_TO_BITSTRING["PC"]),
@@ -34,9 +34,16 @@ for inst in asm_insts:
                                                     device_onto_ab=AB_DEVICE_TO_BITSTRING["IJ"]))
     # Store a byte indirectly from address stored in IJ pair
     elif inst == "STORE_IND":
-        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"],
-                                                     device_write_enable=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
-                                                     device_onto_ab=AB_DEVICE_TO_BITSTRING["IJ"]))
+        # Write occurs during overlap of write enable and chip select going low
+        # We first allow chip select to go low (done when IJ is enabled onto address bus)
+        # Then write occurs during 2nd cycle
+        # Data must be valid for a small period after both write enable and chip select go high, so let T still output onto data bus
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"], inc_PC="0",
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["IJ"]))
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"], inc_PC="0",
+                                                    device_write_enable=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["IJ"]))
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"], inc_PC="1", device_onto_ab=AB_DEVICE_TO_BITSTRING["IJ"]))
     # Add, T = A + B
     elif inst == "ADD":
         inst_obj.add_u_instruction(MicroInstruction(enable_carry_in="0", status_reg_load_select="0", inv_A="0", write_status_reg="1",
@@ -132,9 +139,27 @@ for inst in asm_insts:
     elif inst == "OUTPUT":
         inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"],
                                                     device_write_enable=DB_DEVICE_TO_BITSTRING["OUTPUT"]))
+    elif inst == "INC IJ":
+        inst_obj.add_u_instruction(MicroInstruction(inc_MAR="1"))
+    elif inst == "PUSH":
+        # Follow exactly what we do in STORE_IND instruction except stack pointer drives address bus
+        # Increment stack pointer and program counter by 1 before next instruction fetch
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"], inc_PC="0",
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"], inc_PC="0",
+                                                    device_write_enable=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"],
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"], inc_PC="0"))
+        inst_obj.add_u_instruction(MicroInstruction(inc_PC="1", inc_SP="1")) # increment stack pointer
+    elif inst == "POP":
+        inst_obj.add_u_instruction(MicroInstruction(inc_PC="0", dec_SP="0")) # decrement stack pointer
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
+                                                    device_write_enable=DB_DEVICE_TO_BITSTRING["T"],
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
 
     # Instruction fetch routine is done completely in microcode
-    # Instruction fetch routine is special for reset instruction
-    if inst != "RESET":
+    # Instruction fetch routine is special for reset and halt instruction
+    if inst != "RESET" and inst != "HALT":
         inst_obj.add_fetch_ir_sequence()
     asm_to_object[inst] = inst_obj
