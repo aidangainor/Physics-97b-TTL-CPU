@@ -131,9 +131,44 @@ for inst in asm_insts:
         inst_obj.add_u_instruction(MicroInstruction(condition_code=CONDITION_TO_BITSTRING["NN"], write_condition_bit="0"))
         inst_obj.add_skip_two_bytes_u_insts()
     elif inst == "CALL":
-        pass
+        # Save high 8 bits of program counter onto stack
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"], inc_PC="0",
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["PC_HIGH"], inc_PC="0",
+                                                    device_write_enable=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"],
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"], inc_PC="0"))
+        inst_obj.add_u_instruction(MicroInstruction(inc_PC="0", inc_SP="1")) # increment stack pointer
+
+        # Now save low 8 bits
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"], inc_PC="0",
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["PC_LOW"], inc_PC="0",
+                                                    device_write_enable=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"],
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"], inc_PC="0"))
+        inst_obj.add_u_instruction(MicroInstruction(inc_PC="1", inc_SP="1")) # increment stack pointer and PC
+
+        # Swap out program counter with operand
+        inst_obj.add_fetch_pc_sequence()
     elif inst == "RETURN":
-        pass
+        inst_obj.add_u_instruction(MicroInstruction(inc_PC="0", dec_SP="0")) # decrement stack pointer
+        # program counter low is on top of stack
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"], inc_PC="0",
+                                                    device_write_enable=DB_DEVICE_TO_BITSTRING["PC_LOW"],
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
+        inst_obj.add_u_instruction(MicroInstruction(inc_PC="0", dec_SP="0")) # decrement stack pointer
+        # now program counter high is on top of stack
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["ROM/RAM"], inc_PC="0",
+                                                    device_write_enable=DB_DEVICE_TO_BITSTRING["PC_HIGH"],
+                                                    device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
+        # increment program counter once
+        inst_obj.add_u_instruction(MicroInstruction(inc_PC="1"))
+        # now increment it twice, we must do this because program counter stored on stack was location of call operator in memory.
+        # to get to new instruction: new_pc = old_pc + 3
+        inst_obj.add_skip_two_bytes_u_insts()
     elif inst == "NOP":
         inst_obj.add_def_instruction()
     elif inst == "OUTPUT":

@@ -3,6 +3,13 @@ class MicroInstruction:
     In other words, it represents the 32 control signals active for a single clock cycle that dictate a CPU state transition from microarchitecture level.
     Class variables represent each control signal in default / inactive state, and programmer can generate
     """
+    valid_args = set()
+    list_of_args = ['write_condition_bit', 'clear_condition_bit', 'status_reg_load_select', 'device_onto_db', 'inc_PC', 'inc_MAR', 'device_onto_ab', 'device_write_enable',
+                    'condition_code', 'write_status_reg', 'inv_A', 'enable_carry_in', 'ALU_f0_f1', 'clear_PC', 'clear_MAR', 'inc_SP', 'dec_SP', 'next_micro_inst']
+
+    for arg in list_of_args:
+        valid_args.add(arg)
+
     # The bit 0 is used for currently *unused* EEPROM I/O pins output
     NOT_USED = "1"
 
@@ -40,6 +47,8 @@ class MicroInstruction:
             for char in control_flags[flag]:
                 if char not in ["0", "1"]:
                     raise Exception("Control flag must be either an ASCII 0 or 1")
+            if flag not in self.valid_args:
+                raise Exception(flag + " is not a valid control flag")
             setattr(self, flag, control_flags[flag])
 
     def pretty_print(self):
@@ -74,11 +83,6 @@ class MicroInstruction:
             raise Exception("EEPROM number must be between 1 and 4 inclusive")
         else:
             return self.get_all_EEPROM_flags()[EEPROM_num-1]
-
-    def set_condition_code_on(self):
-        """Force condition met bit high
-        """
-        self.condition_code = "000"
 
     def set_next_u_inst_addr(self, addr):
         """Set the 4 bit address to load into feedback register next clock cycle.
