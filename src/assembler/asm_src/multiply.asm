@@ -51,9 +51,8 @@ multiply_subroutine:
     mov b,t                     ; put decrement variable in register B
     load_byte 255d              ; 255 = -1 following 2's complement representation of negative numbers
     mov a,t                     ; A = -1
-    add                         ; B = B + (-1)
-    mov t,b
-    store_ind                   ; We don't have enough registers so save B register, decrement variable, back into addr 8451
+    add                         ; T = B + (-1)
+    store_ind                   ; We don't have enough registers so save decrement variable, so put it back into addr 8451
 
     load_byte 2d
     mov i,t                     ; Go back to addr 8450 for memory address register
@@ -61,7 +60,7 @@ multiply_subroutine:
     jmp_un &multiply_loop       ; Loop!
 
   return_from_loop:
-    load_ind                    ; Retrieve final product from meory addr 8451 in RAM
+    load_ind                    ; Retrieve final product from memory addr 8450 in RAM
     mov a,t                     ; Multiplication result is in a register, move it to T so we can then move to output register
     output                      ; Output onto display
     halt
