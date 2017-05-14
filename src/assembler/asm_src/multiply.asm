@@ -14,11 +14,11 @@ multiply_subroutine:
   mov c,t                     ; C = T aka C = A, or in other words we are saving the A input into C register
 
   ; The sum variable is stored at memory address 8450d
-  ; Therefore I = 33 and J = 2, since 33 << 8 | 2 = 8450
+  ; Therefore J = 33 and I = 2, since 33 << 8 | 2 = 8450
   load_byte 2d
-  mov j,t
-  load_byte 33d
   mov i,t
+  load_byte 33d
+  mov j,t
 
   load_byte 0d                ; Product = 0
   store_ind                   ; Our sum is stored at address 8450, so we initialize multiplication product variable to 0
@@ -28,7 +28,7 @@ multiply_subroutine:
   store_ind
 
   load_byte 2d
-  mov j,t                     ; Go back to addr 8450 for memory address register
+  mov i,t                     ; Go back to addr 8450 for memory address register
 
   multiply_loop:
     ; Check if B == 0 section
@@ -57,7 +57,7 @@ multiply_subroutine:
     store_ind                   ; We don't have enough registers so save B register, decrement variable, back into addr 8451
 
     load_byte 2d
-    mov j,t                     ; Go back to addr 8450 for memory address register
+    mov i,t                     ; Go back to addr 8450 for memory address register
 
     jmp_un &multiply_loop       ; Loop!
 
