@@ -43,6 +43,7 @@ multiply_subroutine:
     load_ind                    ; Grab sum from memory address 8450
     mov a,t
     add                         ; T = A + B
+    output                      ; show sum
     store_ind                   ; Sum is stored in 8450d in RAM
 
     ; Decrement B section
@@ -52,6 +53,7 @@ multiply_subroutine:
     load_byte 255d              ; 255 = -1 following 2's complement representation of negative numbers
     mov a,t                     ; A = -1
     add                         ; T = B + (-1)
+    output                      ; show decrement variable
     store_ind                   ; We don't have enough registers so save decrement variable, so put it back into addr 8451
 
     load_byte 2d
