@@ -40,25 +40,43 @@ load_byte 2d
 mov i,t
 
 load_ind
+output
+nop 5
 inc ij
 
 load_ind
+output
+nop 5
 inc ij
 
 load_ind
+output
+nop 5
 inc ij
 
 load_ind
+output
+nop 5
 inc ij
 
 load_ind
+output
+nop 5
 inc ij
 
 load_ind
+output
+nop 5
 inc ij
 
 load_ind
+output
+nop 5
 inc ij
 
 load_ind
+output
+nop 5
 inc ij
+
+halt
