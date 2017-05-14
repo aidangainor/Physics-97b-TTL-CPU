@@ -41,10 +41,9 @@ multiply_subroutine:
     mov t,c                     ; T = C, in other words we are grabbing original value of A from C register
     mov b,t                     ; B = T aka B = C
     load_ind                    ; Grab sum from memory address 8450
-    mov t,a
+    mov a,t
     add                         ; T = A + B
     store_ind                   ; Sum is stored in 8450d in RAM
-
 
     ; Decrement B section
     inc ij                      ; decrement variable stored at addr 8451
