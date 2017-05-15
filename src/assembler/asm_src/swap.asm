@@ -20,10 +20,10 @@ output
 
 call &to_index_zero
 load_ind
-mov b,t
+mov a,t ; a holds 100
 inc ij
 load_ind
-mov a,t
+mov b,t ; b holds 40
 call &swap
 call &to_index_zero
 call &show_array_contents
@@ -45,10 +45,10 @@ swap: ;puts A before B in the index
   mov t,a ; t = index-1
   mov i,t ; i = index-1
   mov t,b ; t = a
-  load_ind
+  store_ind ; load index-1 with a
   inc ij
   mov t,c
-  load_ind
+  store_ind
   return
 
 to_index_zero:
