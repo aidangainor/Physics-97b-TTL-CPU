@@ -95,7 +95,7 @@ for addr in range(512):
                 for i in range(16):
                     set_fb_reg_addr(jmp_condition_met_inst, i)
                     if i == 0:
-                        old_condition_inst_obj.inst_micro_instructions[0].set_next_u_inst_addr("0000")
+                        old_condition_inst_obj.inst_micro_instructions[0].set_next_u_inst_addr("0001")
                         u_inst = old_condition_inst_obj.inst_micro_instructions[0]
                     else:
                         u_inst = jmp_condition_met_inst.get_u_instructions()[i]
