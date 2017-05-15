@@ -3,27 +3,27 @@ call &to_index_zero
 
   ;load arrays with any values from 0-254s
   ;load first index
-load_byte 22d      ; T = 22
-store_ind         ; array[0] = 22
-inc ij            ; J = J + 1
+load_byte 22d       ; T = 22
+store_ind           ; array[0] = 22
+inc ij              ; J = J + 1
 output
 
   ;load second index
-load_byte 40d      ; T = 40
-store_ind         ; array[1] = 40
-inc ij            ; J = J + 1
+load_byte 40d       ; T = 40
+store_ind           ; array[1] = 40
+inc ij              ; J = J + 1
 output
 
   ;load third index
 load_byte 100d      ; T = 100
-store_ind         ; array[2] = 100
-inc ij            ; J = J + 1
+store_ind           ; array[2] = 100
+inc ij              ; J = J + 1
 output
 
   ;load final index
 load_byte 255d      ; T = 255
-store_ind         ; array[3] = 255
-inc ij            ; J = J + 1
+store_ind           ; array[3] = 255
+inc ij              ; J = J + 1
 output
 
     ;begin construction of loop using the stack to hold the size of the array
@@ -33,11 +33,11 @@ push ; push 0 to stack
 
   ;check if empty array by xoring the current index and 255 which we state as the last array symbol
   count_loop:
-load_ind      ;check index of array, starting at 1
-mov a,t      ;move array[n] to a
+load_ind                ;check index of array, starting at 1
+mov a,t                 ;move array[n] to a
 load_byte 255d
-mov b,t      ;move 255 to b
-xor           ;xor, if 255, output will be 0
+mov b,t                 ;move 255 to b
+xor                     ;xor, if 255, output will be 0
 output
 jmp_z &output_count     ;we have reached the end of the array and thus have finished counting
 
@@ -63,3 +63,4 @@ to_index_zero:
   mov j,t           ; I = 32
   load_byte 0d
   mov i,t
+  return
