@@ -12,7 +12,7 @@ store_ind           ; array[1] = 40
 inc ij              ; J = J + 1
 output
 
-;load second index
+;load three index
 load_byte 255d       ; T = 255
 store_ind           ; array[255] = 255
 inc ij              ; J = J + 1
@@ -60,9 +60,11 @@ to_index_zero:
 
 show_array_contents:
   load_ind
+  mov b,t
   output
   inc ij
   load_byte 255d
+  mov a,t
   xor
   jmp_nz &show_array_contents
   return
