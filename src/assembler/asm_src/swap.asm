@@ -1,18 +1,18 @@
 call &to_index_zero
 
   ;load first index
-load_byte 100d       ; T = 100
+load_byte 123d       ; T = 123
 store_ind           ; array[0] = 100
 inc ij              ; J = J + 1
 output
 
   ;load second index
-load_byte 40d       ; T = 40
+load_byte 45d       ; T = 45
 store_ind           ; array[1] = 40
 inc ij              ; J = J + 1
 output
 
-;load three index
+;turing end file symbol
 load_byte 255d       ; T = 255
 store_ind           ; array[255] = 255
 inc ij              ; J = J + 1
@@ -37,7 +37,7 @@ swap: ;puts A before B in the index
   mov t,a
   mov i,t ;i stores a
   load_byte 11111111b
-  mov a,t
+  mov a,t ;add 255 to subtract 1 through twos complement
   add ; t = index-1
   mov a,t ; a = index-1
   mov t,i ; t = a
