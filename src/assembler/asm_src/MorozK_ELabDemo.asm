@@ -16,6 +16,7 @@ mov c,t				;Store Cycle Count
 lowpower:
 
 load_byte 1d 			;Grab 1 [00000001] (1 = LED light on; 0 = LED light off)
+output
 mov b,t 			;b = 00000001 (1)
 output 				;7seg = 1
 nop
@@ -50,7 +51,9 @@ mov c,t				;Store Cycle Count
 midpower:
 
 pop				;Bring back b Register (7)
-mov b,t 
+mov b,t 			;b = 00000111
+output
+nop
 load_byte 8d 			;Grab 8 [00001000]
 mov a,t 
 add 				;Add 7 + 8
@@ -61,9 +64,9 @@ load_byte 16d
 mov a,t 
 add 				;Add 15 + 16
 mov b,t 			;b = 00011111 (31)
+push				;Store b Register (31)
 output 				;7seg = 31
 nop
-push				;Store b Register (31)
 load_byte 32d 
 mov a,t 
 add 				;Add 31 + 32
@@ -87,6 +90,9 @@ mov c,t				;Store Cycle Count
 highpower:
 
 pop				;Bring back b Register (31)
+mov b,t				;b = 00011111
+output				;7seg = 31
+nop
 load_byte 32d 
 mov a,t 
 add 				;Add 31 + 32
