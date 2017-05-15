@@ -10,6 +10,8 @@ load_byte 0d      ; register T = 0, we note the numbers 0 and 1 are not prime, 0
 store_ind         ; array_of_primes_booleans[0] = 0
 inc ij            ; 8192 is start of array, so we are now going to 8193 or array index 1
 store_ind         ; array_of_primes_booleans[1] = 0
+inc ij
+store_ind         ; array_of_primes_booleans[2] = 1
 
 load_byte 255d    ; load decimal value 255 to T register, so we will stop our array when I = 255
 mov a,t           ; A = 255, we will check if I = A and stop array init there
@@ -51,7 +53,6 @@ outer_main_loop:
   xor               ; if XOR result is 1, then that means number (in reg I) is not prime
 
   mov t,i           ; do this before we jump (in that I is always incrementing by 1)
-  output
   mov b,t
 
   jmp_nz &outer_main_loop   ; Re iterate main prime checking loop if this number is not prime
@@ -65,7 +66,7 @@ outer_main_loop:
   pop                         ; retrieve from stack and save into T
   mov b,t                     ; we will keep multiples of prime in register a and prime number in register b
                               ; b will not be modified until beginning of outer_main_loop execution
-
+  output
   ; compute all multiples of first found prime number squared, and mark their corresponding index in the array as 0 (not prime)
   mov t,a                     ; Multiple of prime is always in a register in this loop, multiply subroutine stores result in a
 
@@ -93,7 +94,6 @@ outside_loop_end:
     xor                           ; Check if prime, if it is out
     jmp_nz &check_if_array_end    ; Go to end of loop if not prime (array value != 1), in other words we jump over the step of outputting
     mov t,i                       ; Prime number is in I register (index into array)
-    output
 
     check_if_array_end:
       inc ij
@@ -101,6 +101,7 @@ outside_loop_end:
       load_byte 255d
       mov b,t               ; B = 255
       mov t,i
+      output
       mov a,t               ; A = I
       xor                   ; Check if I == 255
       jmp_nz &print_loop    ; Keep printing primes until I == 255
