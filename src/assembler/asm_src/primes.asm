@@ -35,7 +35,6 @@ outer_main_loop:
                     ; Currently this prime in in register B, and later on we will cross out multiples of it (if it is prime)
   mov i,t           ; Get back original value of I reg (current prime)
   mov a,t           ; If a == 16, break loop
-  output
 
   load_byte 16d
   mov b,t
@@ -52,6 +51,7 @@ outer_main_loop:
   xor               ; if XOR result is 1, then that means number (in reg I) is not prime
 
   mov t,i           ; do this before we jump (in that I is always incrementing by 1)
+  output
   mov b,t
 
   jmp_nz &outer_main_loop   ; Re iterate main prime checking loop if this number is not prime
@@ -74,6 +74,8 @@ outer_main_loop:
     load_byte 0d
     store_ind                 ; Mark multiple of prime number as not a prime number by saving at index [i] value 0
     add
+    output
+    nop 10
     mov a,t                   ; Next prime to cross off is stored in a
     jmp_c &outer_main_loop    ; Means multiple of prime > 255, so we are done crossing out primes
     jmp_un &inner_main_loop
