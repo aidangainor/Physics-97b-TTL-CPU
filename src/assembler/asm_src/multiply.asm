@@ -6,6 +6,22 @@ load_byte 11d
 mov a,t
 load_byte 13d
 mov b,t
+call &multiply_subroutine
+
+load_byte 9d
+mov a,t
+load_byte 9d
+mov b,t
+call &multiply_subroutine
+
+load_byte 31d
+mov a,t
+load_byte 5d
+mov b,t
+call &multiply_subroutine
+
+halt
+
 
 multiply_subroutine:
   mov t,a                     ; T = A, we need to save T in C register
@@ -51,7 +67,6 @@ multiply_subroutine:
     load_byte 255d              ; 255 = -1 following 2's complement representation of negative numbers
     mov a,t                     ; A = -1
     add                         ; T = B + (-1)
-    output                      ; show decrement variable
     store_ind                   ; We don't have enough registers so save decrement variable, so put it back into addr 8451
 
     load_byte 2d
@@ -63,4 +78,3 @@ multiply_subroutine:
     load_ind                    ; Retrieve final product from memory addr 8450 in RAM
     mov a,t                     ; Multiplication result is in a register, move it to T so we can then move to output register
     output                      ; Output onto display
-    halt
