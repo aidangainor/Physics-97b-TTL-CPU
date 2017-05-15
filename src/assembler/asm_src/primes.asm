@@ -31,24 +31,27 @@ mov b,t           ; B = 1, since B is basically a reference to a number 0 thru 2
                   ; The value in RAM pointed by memory address in IJ is either 0 for not prime, and 1 for prime
 
 outer_main_loop:
-  mov t,b           ; This is done to keep value of I consistent, basically we store current number we are checking if prime in B at end of loop
-  mov i,t           ; We but it back into our index register (IJ) at the start of each loop to be consistent with the end of the loop
+  mov t,b           ; This is done to save original value of I register, aka current prime we are on
+                    ; Currently this prime in in register B, and later on we will cross out multiples of it (if it is prime)
 
-  inc ij            ; Always increment I, we will never carry over to J since max number we check if prime is 255
-
-  mov t,i
   mov a,t           ; Load a and b with current prime found, and compute the square
   mov b,t
 
-  call &multiply_subroutine
-  jmp_c &outside_loop_end ; If carry bit is set, then that means result of current_prime * current_prime > 255
+  push                          ; Save current prime onto stack
+  call &multiply_subroutine     ; Square current prime, if > 255, we are done
+  jmp_c &outside_loop_end       ; If carry bit is set, then that means result of current_prime * current_prime > 255
+  pop
+  mov i,t                       ; Get back original value of I reg (current prime)
+
+
+  inc ij            ; Always increment I, we will never carry over to J since max number we check if prime is 255
 
   ; Check if I references a prime number, our first prime should be 2
-  load_byte 1d      ; 1 is "number is prime"
+  load_byte 1d      ; 1 is boolean "number is prime"
   mov b,t
-  mov t,i           ; I is current number we are checking if prime
-  mov a,t
-  xor                         ; if XOR result is 1, then that means number (in reg I) is not prime
+  load_ind          ; Use IJ to look of array of booleans to check if this number has been marked as prime yet
+  mov a,t           ; Transfer the number to A register to XOR with 1, if result = 0 then this number is marked as prime
+  xor                       ; if XOR result is 1, then that means number (in reg I) is not prime
   jmp_nz &outer_main_loop   ; Re iterate main prime checking loop if this number is not prime
 
   ; If we reach this code here means that we are at a prime number, so cross of all multiples of it by marking them not prime
@@ -56,21 +59,22 @@ outer_main_loop:
   mov t,i
   mov b,t
   mov a,t
-  mov c,t     ; I is stored in C for later use, we use it for addition loop to remember was current prime is
 
-  push                        ; save original value of I onto the stack
-  call &multiply_subroutine   ; register a will not contain prime number squared
+  push                        ; save original value of I onto the stack, since it will be modified in multiply_subroutine
+  call &multiply_subroutine   ; register a will now contain prime number squared
   pop                         ; retrieve from stack and save into T
-  mov i,t                     ; get back original value of I
+  mov b,t                     ; we will keep multiples of prime in register a and prime number in register b
+                              ; b will not be modified until beginning of outer_main_loop execution
 
-  mov b,t                     ; we will keep multiples of prime in a register and prime number in b register
+  ; compute all multiples of first found prime number squared, and mark their corresponding index in the array as 0 (not prime)
+  mov t,a           ; Multiple of prime is always in a register in this loop, multiply subroutine stores result in a
 
   inner_main_loop:
+    mov i,t
     load_byte 0d
-    mov i,a           ; Multiple of prime is always in a register in this loop
-    store_ind         ; Mark multiple of prime number as not a prime number
+    store_ind                 ; Mark multiple of prime number as not a prime number by saving at index [i] value 0
     add
-    mov a,t           ; Next prime to cross off is stored in a
+    mov a,t                   ; Next prime to cross off is stored in a
     jmp_c &outer_main_loop    ; Means multiple of prime > 255, so we are done crossing out primes
     jmp_un &inner_main_loop
 
@@ -85,12 +89,12 @@ outside_loop_end:
     load_byte 1d
     mov b,t
     xor                           ; Check if prime, if it is out
-    jmp_nz &check_if_array_end    ; Go to end of loop if not prime (array value != 1)
+    jmp_nz &check_if_array_end    ; Go to end of loop if not prime (array value != 1), in other words we jump over the step of outputting
     mov t,i                       ; Prime number is in I register (index into array)
     output
 
     check_if_array_end:
-      inc_ij
+      inc ij
       ; Check if array end section by seeing if I == 255
       load_byte 255d
       mov b,t               ; B = 255
