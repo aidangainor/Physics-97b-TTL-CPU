@@ -88,3 +88,8 @@ class MicroInstruction:
         """Set the 4 bit address to load into feedback register next clock cycle.
         """
         self.next_micro_inst = addr
+
+    def set_condition_code_on(self):
+        """Force condition met bit high
+        """
+        self.condition_code = "000"

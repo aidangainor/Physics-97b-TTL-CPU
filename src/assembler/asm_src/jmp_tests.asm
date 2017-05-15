@@ -43,3 +43,4 @@ output ; if 103 is outputted, we failed
 success3:
   load_byte 104d
   output
+  halt
