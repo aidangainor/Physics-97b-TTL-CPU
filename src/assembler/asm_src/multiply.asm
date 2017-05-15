@@ -2,26 +2,27 @@
 ; Output is stored in A register
 ; Sums are accumulated in A register while B register is decremented
 
-load_byte 11d
-mov a,t
-load_byte 13d
-mov b,t
-call &multiply_subroutine
-nop 10
 
-load_byte 9d
+load_byte 1d
 mov a,t
-load_byte 9d
 mov b,t
-call &multiply_subroutine
-nop 10
 
-load_byte 35d
-mov a,t
-load_byte 7d
-mov b,t
-call &multiply_subroutine
-nop 10
+loop_start:
+  push
+  call &multiply_subroutine
+  mov t,a
+  output
+  pop
+  mov i,t
+  inc ij
+  mov t,i
+  mov b,t
+  load_byte 16d
+  mov a,t
+  xor
+  mov t,i
+  mov a,t
+  jmp_nz &loop_start
 
 halt
 
@@ -79,5 +80,4 @@ multiply_subroutine:
   return_from_loop:
     load_ind                    ; Retrieve final product from memory addr 8450 in RAM
     mov a,t                     ; Multiplication result is in a register, move it to T so we can then move to output register
-    output                      ; Output onto display
     return                      ; Go back to caller
