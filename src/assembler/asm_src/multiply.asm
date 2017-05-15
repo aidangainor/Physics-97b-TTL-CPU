@@ -2,11 +2,9 @@
 ; Output is stored in A register
 ; Sums are accumulated in A register while B register is decremented
 
-; call &multiply_subroutine
-
-load_byte 3d
+load_byte 11d
 mov a,t
-load_byte 5d
+load_byte 13d
 mov b,t
 
 multiply_subroutine:
@@ -32,7 +30,7 @@ multiply_subroutine:
 
   multiply_loop:
     ; Check if B == 0 section
-    load_byte 0d                ; T = 0, this is for the check that B == 0
+    load_byte 1d                ; T = 0, this is for the check that B == 1
     mov a,t                     ; A = 0
     xor                         ; check if B == 0
     jmp_z &return_from_loop
