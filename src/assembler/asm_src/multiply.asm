@@ -16,7 +16,7 @@ mov b,t
 call &multiply_subroutine
 nop 10
 
-load_byte 36d
+load_byte 35d
 mov a,t
 load_byte 7d
 mov b,t
