@@ -8,115 +8,119 @@ poweron:
 
 load_byte 0d 
 output 
-mov i,t 
-
-load_byte 15d			;Cycle 15 times
+nop
+mov i,t 			;Start Cycle Counter at 0
+load_byte 4d			;Cycle 4 times
 mov c,t				;Store Cycle Count
 
 lowpower:
 
-load_byte 1d 
-mov b,t 
-output 
-load_byte 2d 
+load_byte 1d 			;Grab 1 [00000001] (1 = LED light on; 0 = LED light off)
+mov b,t 			;b = 00000001 (1)
+output 				;7seg = 1
+nop
+load_byte 2d 			;Grab 2 [00000010]
 mov a,t 
-add 
-mov b,t 
-output 
-load_byte 4d 
+add 				;Add 1 + 2
+mov b,t 			;b = 00000011 (3)
+output 				;7seg = 3
+nop
+load_byte 4d 			;Grab 4 [00000100]
 mov a,t 
-add 
-mov b,t 
-output  
+add 				;Add 4 + 3
+mov b,t 			;b = 00000111 (7)
+output  			;7seg = 7
+nop
 push				;Store b Register (7)
 
-inc ij 				;i = i + 1 (Cycle Counter)
+inc ij 				;i = i + 1 (Cycle Counter plus one)
 mov t,i 			;Move i to t (No i to b command)
 mov b,t 			;Move t to b (Prep Cycler)
 mov t,c 			;Grab cycle counter
 mov a,t 			;Prep cycle
-xor
-jmp_nz &lowpower		;Loop ends at i = C; 15
+xor				;If i = C; 0. If i != C; 1.
+jmp_nz &lowpower		;Loop ends at i = C; 4
+
 
 load_byte 0d			;Reset Cycle Counter
 mov i,t 			;Store Cycle Counter
+load_byte 8d			;Cycle 8 times
+mov c,t				;Store Cycle Count
 
 midpower:
 
-load_byte 30d			;Cycle 30 times
-mov c,t				;Store Cycle Count
-
-pop
+pop				;Bring back b Register (7)
 mov b,t 
-load_byte 8d 
+load_byte 8d 			;Grab 8 [00001000]
 mov a,t 
-add 
-mov b,t 
-output 
+add 				;Add 7 + 8
+mov b,t 			;b = 00001111 (15)
+output 				;7seg = 15
+nop
 load_byte 16d 
 mov a,t 
-add 
-mov b,t 
-output 
+add 				;Add 15 + 16
+mov b,t 			;b = 00011111 (31)
+output 				;7seg = 31
+nop
 push				;Store b Register (31)
 load_byte 32d 
 mov a,t 
-add 
-mov b,t 
-output
+add 				;Add 31 + 32
+mov b,t 			;b = 00111111 (63)
+output 				;7seg = 63
+nop
 
-midcycle:
-
-inc ij	 			;i = i + 1
+inc ij	 			;i = i + 1 (Cycle counter plus one)
 mov t,i 			;Move i to t (No i to b command)
 mov b,t 			;Move t to b (Prep Cycler)
 mov t,c 			;Grab cycle counter
 mov a,t 			;Cycle Counter can be XORed with Cycle Count
-xor
-jmp_nz &midpower		;Loop ends at i = C; 30
+xor				;If i = C; 0. If i != C; 1.
+jmp_nz &midpower		;Loop ends at i = C; 8
 
 load_byte 0d			;Reset Cycle Counter
 mov i,t 			;Store Cycle Counter
+load_byte 12d			;Cycle 12 times
+mov c,t				;Store Cycle Count
 
 highpower:
 
-load_byte 60d			;Cycle 60 times
-mov c,t				;Store Cycle Count
-
-pop
+pop				;Bring back b Register (31)
 load_byte 32d 
 mov a,t 
-add 
-mov b,t 
-output
+add 				;Add 31 + 32
+mov b,t 			;b = 00111111 (63)
+output 				;7seg = 63
+nop
 load_byte 64d 
 mov a,t 
-add 
-mov b,t 
+add 				;Add 63 + 64
+mov b,t 			;b = 01111111 (127)
 load_byte 83d			;Power Output (83 corresponds with 127b)
 output				;Display 83
+nop
 load_byte 128d 
 mov a,t 
-add 
-mov b,t 
+add 				;Add 127 + 128
+mov b,t 			;b = 1111111 (255)
 load_byte 99d			;Power Output (99 correspond with 255b)
 output				;Display 99
+nop
 
-highcycle:
-
-inc ij	 			;i = i + 1
+inc ij	 			;i = i + 1 (Cycle Counter plus one)
 mov t,i 			;Move i to t (No i to b command)
 mov b,t 			;Move t to b (Prep Cycler)
 mov t,c 			;Grab cycle counter
 mov a,t 			;Cycle Counter can be XORed with Cycle Count
-xor
-jmp_nz &highpower		;Loop ends at i = C; 60
+xor				;If i = C; 0. If i != C; 1.
+jmp_nz &highpower		;Loop ends at i = C; 12
 
 
 
 overload:
 
-load_byte 255d			;255 in Binary to b Register
+load_byte 255d			;11111111 (255) to b Register
 mov b,t				;All LEDs on in b Register
 load_byte 100d			;Power at Max (100)
 output				;Display Power at Max
@@ -125,7 +129,7 @@ nop
 nop 
 nop 
 nop 
-load_byte 0d			;0 in Binary to b Register
+load_byte 0d			;00000000 (0) to b Register
 mov b,t				;All LEDs off in b Register
 output				;Power off (0)
 nop				;Stall LED display off to imitate flashing on and off
