@@ -78,3 +78,4 @@ multiply_subroutine:
     load_ind                    ; Retrieve final product from memory addr 8450 in RAM
     mov a,t                     ; Multiplication result is in a register, move it to T so we can then move to output register
     output                      ; Output onto display
+    return                      ; Go back to caller
