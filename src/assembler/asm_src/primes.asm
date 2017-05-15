@@ -37,6 +37,8 @@ outer_main_loop:
   mov a,t           ; Load a and b with current prime found, and compute the square
   mov b,t
 
+  output
+
   push                          ; Save current prime onto stack
   call &multiply_subroutine     ; Square current prime, if > 255, we are done
   jmp_c &outside_loop_end       ; If carry bit is set, then that means result of current_prime * current_prime > 255
