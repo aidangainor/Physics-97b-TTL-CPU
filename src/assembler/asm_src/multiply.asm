@@ -12,6 +12,7 @@ loop_start:
   call &multiply_subroutine
   mov t,a
   output
+  nop 30
   pop
   mov i,t
   inc ij
