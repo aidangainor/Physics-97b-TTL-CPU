@@ -132,22 +132,22 @@ for inst in asm_insts:
         inst_obj.add_skip_two_bytes_u_insts()
     elif inst == "CALL":
         # Save high 8 bits of program counter onto stack
-        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"], inc_PC="0",
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["PC_HIGH"], inc_PC="0",
                                                     device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
         inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["PC_HIGH"], inc_PC="0",
                                                     device_write_enable=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
                                                     device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
-        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"],
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["PC_HIGH"],
                                                     device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"], inc_PC="0"))
         inst_obj.add_u_instruction(MicroInstruction(inc_PC="0", inc_SP="1")) # increment stack pointer
 
         # Now save low 8 bits
-        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"], inc_PC="0",
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["PC_LOW"], inc_PC="0",
                                                     device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
         inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["PC_LOW"], inc_PC="0",
                                                     device_write_enable=DB_DEVICE_TO_BITSTRING["ROM/RAM"],
                                                     device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"]))
-        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["T"],
+        inst_obj.add_u_instruction(MicroInstruction(device_onto_db=DB_DEVICE_TO_BITSTRING["PC_LOW"],
                                                     device_onto_ab=AB_DEVICE_TO_BITSTRING["SP"], inc_PC="0"))
         inst_obj.add_u_instruction(MicroInstruction(inc_PC="1", inc_SP="1")) # increment stack pointer and PC
 
