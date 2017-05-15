@@ -1,5 +1,3 @@
-
-
   ; start array at 8192
 load_byte 32d     ; load T register w/ 32,
 mov j,t           ; I = 32
@@ -32,62 +30,26 @@ mov j,t           ; I = 32
 load_byte 0d
 move i,t
 push ; push 0 to stack
+
   ;check if empty array by xoring the current index and 255 which we state as the last array symbol
 load_ind      ;check index of array, starting at 1
 move a,t      ;move array[n] to a
 load_byte 255d
 move b,t      ;move 255 to b
 xor           ;xor, if 255, output will be 0
-jmp_z 59d     ;we have reached the end of the array and thus have finished counting
+jmp_z 53d     ;we have reached the end of the array and thus have finished counting
 
   ;add 1 to count which is held in stack
+pop           ;pops count from stack
+mov a,t       ;moves it to register a
+load_byte 1d  ;loads 1 to t
+move b,t      ;which is then moved to b
+add           ;and we add them so that the count goes up by 1
+push          ;to which we then push back to the stack
+inc ij        ;and we increment ij in order to scan the next index in the array
+jmp_nz 35d    ;and we go back to the start of checking for 255
+
+
+  ;output count
 pop
-mov a,t
-load_byte 1d
-move b,t
-add
-push
-inc ij
-jmp_nz 43d
-
-  ;start the double loop where the top layer of the for loop always starts
-pop
-push
-push
-  ;go back to start of the array
-load_byte 32d     ; load T register w/ 32,
-mov i,t           ; I = 32
-load_byte 0d
-move j,t
-push
-;put index n into register c
-load_ind
-mov c,t
-mov b,t
-inc ij
-load_ind
-mov a,t
-sub
-jmp_nn
-
-  ;hold index n at c
-  ;
-  ;we want the bigger number to float up
-  ;solve how to switch within the array
-  mov
-
-
-  ;count elements in the array
-load_byte 0d
-move a,t
-load_byte 1d
-move b,t
-
-load_ind
-move a,t
-load_byte 255d
-move b,t
-and
-jmp_nz 42d
-
-  ;
+out
