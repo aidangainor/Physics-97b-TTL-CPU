@@ -76,19 +76,29 @@ for addr in range(512):
 
     elif addr < 128: # Addr 64 to 127 = for condition met
         jmp_condition_met_inst = Instruction()
-        # Dummy u-instruction
-        jmp_condition_met_inst.add_u_instruction(MicroInstruction(inc_PC="1"))
+        jmp_condition_met_inst.add_u_instruction(MicroInstruction())
         # Fetch the new program counter
         jmp_condition_met_inst.add_fetch_pc_sequence()
         # Get instruction new program counter value points to
         jmp_condition_met_inst.add_fetch_ir_sequence()
 
+        # Go through all micro instructions, and make sure the condition test code in always "unconditional"
+        # The means that the condition met EEPROM pin is always high
+        for u_inst in jmp_condition_met_inst.get_u_instructions():
+            if u_inst != None:
+                u_inst.set_condition_code_on()
+
         if len(IM.asm_insts) > addr-64: # Subtract 64 to take into account the condition met signal being on
             asm_mnemonic = IM.asm_insts[addr-64]
             if asm_mnemonic.startswith("JMP"):
+                old_condition_inst_obj = IM.asm_to_object[asm_mnemonic] # Get original u-instruction for associated conditional jump
                 for i in range(16):
                     set_fb_reg_addr(jmp_condition_met_inst, i)
-                    u_inst = jmp_condition_met_inst.get_u_instructions()[i]
+                    if i == 0:
+                        old_condition_inst_obj.inst_micro_instructions[0].set_next_u_inst_addr("0001")
+                        u_inst = old_condition_inst_obj.inst_micro_instructions[0]
+                    else:
+                        u_inst = jmp_condition_met_inst.get_u_instructions()[i]
                     write_micro_instruction(u_inst, all_file_writers)
             else:
                 for i in range(16):
