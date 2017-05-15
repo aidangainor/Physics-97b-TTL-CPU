@@ -43,7 +43,6 @@ outer_main_loop:
   pop
   mov i,t                       ; Get back original value of I reg (current prime)
 
-
   inc ij            ; Always increment I, we will never carry over to J since max number we check if prime is 255
 
   ; Check if I references a prime number, our first prime should be 2
@@ -51,13 +50,15 @@ outer_main_loop:
   mov b,t
   load_ind          ; Use IJ to look of array of booleans to check if this number has been marked as prime yet
   mov a,t           ; Transfer the number to A register to XOR with 1, if result = 0 then this number is marked as prime
-  xor                       ; if XOR result is 1, then that means number (in reg I) is not prime
+  xor               ; if XOR result is 1, then that means number (in reg I) is not prime
+
+  mov t,i           ; do this before we jump (in that I is always incrementing by 1)
+  mov b,t
+
   jmp_nz &outer_main_loop   ; Re iterate main prime checking loop if this number is not prime
 
   ; If we reach this code here means that we are at a prime number, so cross of all multiples of it by marking them not prime
   ; For example if our first prime is 2, then we are marking all multiples of 2 as not prime
-  mov t,i
-  mov b,t
   mov a,t
 
   push                        ; save original value of I onto the stack, since it will be modified in multiply_subroutine
