@@ -41,9 +41,10 @@ outer_main_loop:
 
   push                          ; Save current prime onto stack
   call &multiply_subroutine     ; Square current prime, if > 255, we are done
-  jmp_c &outside_loop_end       ; If carry bit is set, then that means result of current_prime * current_prime > 255
   pop
   mov i,t                       ; Get back original value of I reg (current prime)
+
+  jmp_c &outside_loop_end       ; If carry bit is set, then that means result of current_prime * current_prime > 255
 
   inc ij            ; Always increment I, we will never carry over to J since max number we check if prime is 255
 
@@ -70,7 +71,7 @@ outer_main_loop:
                               ; b will not be modified until beginning of outer_main_loop execution
 
   ; compute all multiples of first found prime number squared, and mark their corresponding index in the array as 0 (not prime)
-  mov t,a           ; Multiple of prime is always in a register in this loop, multiply subroutine stores result in a
+  mov t,a                     ; Multiple of prime is always in a register in this loop, multiply subroutine stores result in a
 
   inner_main_loop:
     mov i,t
