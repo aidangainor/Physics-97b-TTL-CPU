@@ -33,18 +33,14 @@ mov b,t           ; B = 1, since B is basically a reference to a number 0 thru 2
 outer_main_loop:
   mov t,b           ; This is done to save original value of I register, aka current prime we are on
                     ; Currently this prime in in register B, and later on we will cross out multiples of it (if it is prime)
-
-  mov a,t           ; Load a and b with current prime found, and compute the square
-  mov b,t
-
+  mov i,t           ; Get back original value of I reg (current prime)
+  mov a,t           ; If a == 16, break loop
   output
 
-  push                          ; Save current prime onto stack
-  call &multiply_subroutine     ; Square current prime, if > 255, we are done
-  pop
-  mov i,t                       ; Get back original value of I reg (current prime)
-
-  jmp_c &outside_loop_end       ; If carry bit is set, then that means result of current_prime * current_prime > 255
+  load_byte 16d
+  mov b,t
+  xor                           ; Check if a == 16
+  jmp_z &outside_loop_end       ; If carry bit is set, then that means result of current_prime * current_prime > 255
 
   inc ij            ; Always increment I, we will never carry over to J since max number we check if prime is 255
 
