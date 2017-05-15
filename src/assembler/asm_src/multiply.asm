@@ -4,16 +4,31 @@
 
 ; call &multiply_subroutine
 
-load_byte 3d;
+load_byte 3d
 mov a,t
-load_byte 5d;
+load_byte 5d
 mov b,t
 
 multiply_subroutine:
   mov t,a                     ; T = A, we need to save T in C register
   mov c,t                     ; C = T aka C = A, or in other words we are saving the A input into C register
-  load_byte 0d                ; Sum = 0
-  mov a,t                     ; Our sum is stored in A, so we initialize sum variable to 0
+
+  ; The sum variable is stored at memory address 8450d
+  ; Therefore J = 33 and I = 2, since 33 << 8 | 2 = 8450
+  load_byte 2d
+  mov i,t
+  load_byte 33d
+  mov j,t
+
+  load_byte 0d                ; Product = 0
+  store_ind                   ; Our sum is stored at address 8450, so we initialize multiplication product variable to 0
+
+  inc ij                      ; Decrement variable is originally B input and stored in addr 8451
+  mov t,b
+  store_ind
+
+  load_byte 2d
+  mov i,t                     ; Go back to addr 8450 for memory address register
 
   multiply_loop:
     ; Check if B == 0 section
@@ -22,26 +37,32 @@ multiply_subroutine:
     xor                         ; check if B == 0
     jmp_z &return_from_loop
 
-    ; Decrement B section
-    load_byte 255d              ; 255 = -1 following 2's complement representation of negative numbers
-    mov a,t                     ; A = -1
-    add                         ; B = B + (-1)
-
-    mov t,b
-    push                        ; We don't have enough registers so save B register onto stack (it was stored as temp in T)
-
     ; Accumulate sum section
     mov t,c                     ; T = C, in other words we are grabbing original value of A from C register
     mov b,t                     ; B = T aka B = C
+    load_ind                    ; Grab sum from memory address 8450
+    mov a,t
     add                         ; T = A + B
-    mov a,t                     ; Sum is stored in A, so sum = sum + A input
+    output                      ; show sum
+    store_ind                   ; Sum is stored in 8450d in RAM
 
-    pop
-    mov b,t                     ; Pop original value of B from stack back into B
+    ; Decrement B section
+    inc ij                      ; decrement variable stored at addr 8451
+    load_ind                    ; grab decrement variable from addr 8451
+    mov b,t                     ; put decrement variable in register B
+    load_byte 255d              ; 255 = -1 following 2's complement representation of negative numbers
+    mov a,t                     ; A = -1
+    add                         ; T = B + (-1)
+    output                      ; show decrement variable
+    store_ind                   ; We don't have enough registers so save decrement variable, so put it back into addr 8451
+
+    load_byte 2d
+    mov i,t                     ; Go back to addr 8450 for memory address register
+
     jmp_un &multiply_loop       ; Loop!
 
   return_from_loop:
-    ; return                      ; Pop program counter from stack and return to our caller's location
-    mov t,a                     ; Multiplication result is in a register, move it to T so we can then move to output register
-    output
+    load_ind                    ; Retrieve final product from memory addr 8450 in RAM
+    mov a,t                     ; Multiplication result is in a register, move it to T so we can then move to output register
+    output                      ; Output onto display
     halt
