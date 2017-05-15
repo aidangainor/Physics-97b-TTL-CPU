@@ -33,6 +33,8 @@ mov b,t 			;b = 00000111 (7)
 output  			;7seg = 7
 nop
 push				;Store b Register (7)
+push
+push				;Into 3rd Element of Stack
 
 inc ij 				;i = i + 1 (Cycle Counter plus one)
 mov t,i 			;Move i to t (No i to b command)
@@ -51,6 +53,8 @@ mov c,t				;Store Cycle Count
 midpower:
 
 pop				;Bring back b Register (7)
+pop
+pop				;From 3rd element
 mov b,t 			;b = 00000111
 output
 nop
@@ -65,6 +69,7 @@ mov a,t
 add 				;Add 15 + 16
 mov b,t 			;b = 00011111 (31)
 push				;Store b Register (31)
+push				;Into 2nd Element of Stack
 output 				;7seg = 31
 nop
 load_byte 32d 
@@ -90,6 +95,7 @@ mov c,t				;Store Cycle Count
 highpower:
 
 pop				;Bring back b Register (31)
+pop				;From 2nd Element of Stack
 mov b,t				;b = 00011111
 output				;7seg = 31
 nop
