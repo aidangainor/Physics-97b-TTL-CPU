@@ -29,7 +29,7 @@ output
     ;begin construction of loop using the stack to hold the size of the array
   ;go back to beginning of array
 call &to_index_zero
-push ; push 0 to stack
+push                    ; push 0 to stack
 
   ;check if empty array by xoring the current index and 255 which we state as the last array symbol
   count_loop:
@@ -39,7 +39,7 @@ load_byte 255d
 mov b,t                 ;move 255 to b
 xor                     ;xor, if 255, output will be 0
 output
-jmp_z &output_count     ;we have reached the end of the array and thus have finished counting
+jmp_z &output_show      ;we have reached the end of the array and thus have finished counting
 
   ;add 1 to count which is held in stack
 pop           ;pops count from stack to t
@@ -50,12 +50,13 @@ add           ;and we add them so that the count goes up by 1
 output
 push          ;to which we then push back to the stack
 inc ij        ;and we increment ij in order to scan the next index in the array
-jmp_nz &count_loop:    ;and we go back to the start of checking for 255
+jmp_nz &count_loop    ;and we go back to the start of checking for 255
 
-  output_count:
+  output_show:
 pop
 output
 halt
+return
 
 
 to_index_zero:
