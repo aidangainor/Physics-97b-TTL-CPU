@@ -84,26 +84,21 @@ outside_loop_end:
     mov a,t
     load_byte 1d
     mov b,t
-    xor
-    jmp_nz &check_if_array_end   ; If value in array != 1, then don't print
-
-    call print_subroutine        ; If i == 0, then we print the prime number
+    xor                           ; Check if prime, if it is out
+    jmp_nz &check_if_array_end    ; Go to end of loop if not prime (array value != 1)
+    mov t,i                       ; Prime number is in I register (index into array)
+    output
 
     check_if_array_end:
       inc_ij
       ; Check if array end section by seeing if I == 255
       load_byte 255d
-      mov b,t
+      mov b,t               ; B = 255
       mov t,i
-      mov a,t
+      mov a,t               ; A = I
       xor                   ; Check if I == 255
       jmp_nz &print_loop    ; Keep printing primes until I == 255
       halt
-
-print_subroutine:
-  mov t,i                 ; Prime number is in I register (index into array)
-  output
-  return
 
 
   ; Multiply two numbers stored in the ALU A and B input registers

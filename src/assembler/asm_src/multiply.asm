@@ -7,21 +7,23 @@ mov a,t
 load_byte 13d
 mov b,t
 call &multiply_subroutine
+nop 10
 
 load_byte 9d
 mov a,t
 load_byte 9d
 mov b,t
 call &multiply_subroutine
+nop 10
 
 load_byte 31d
 mov a,t
 load_byte 5d
 mov b,t
 call &multiply_subroutine
+nop 10
 
 halt
-
 
 multiply_subroutine:
   mov t,a                     ; T = A, we need to save T in C register
