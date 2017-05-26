@@ -1,9 +1,10 @@
+; Compute all squares up to 225 by using multiplication subroutine
 ; Multiply two numbers stored in the ALU A and B input registers
 ; Output is stored in A register
 ; Sums are accumulated in A register while B register is decremented
 
 
-load_byte 1d
+load_byte 0d
 mov a,t
 mov b,t
 
@@ -12,7 +13,7 @@ loop_start:
   call &multiply_subroutine
   mov t,a
   output
-  nop 30
+  nop 50
   pop
   mov i,t
   inc ij
